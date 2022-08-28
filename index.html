@@ -37,7 +37,7 @@
 
         <div class="card mb-4">
             <h5 class="card-header">
-                Enter API Key
+                API Key
             </h5>
             <div class="card-body">
                 <p class="card-text">Grant Vengo access to your ScreenCloud account to pull the information needed to
@@ -52,21 +52,24 @@
                         <textarea class="form-control" id="text-apikey" style="height: 100px"></textarea>
                         <label for="text-apikey">API Key</label>
                     </div>
-                    <button id="btn-submit-apikey" type="submit" class="btn btn-primary me-1">Submit</button>
+                    <button id="btn-submit-apikey" type="submit" class="btn btn-primary me-1">Submit Key</button>
                     <span id="icon-success" class="text-success d-none" style="vertical-align: middle;"><i
-                            class="bi bi-check-circle-fill pe-1"></i>Valid key</span>
+                            class="bi bi-check-circle-fill pe-1"></i>Valid</span>
                     <span id="icon-error" class="text-danger d-none" style="vertical-align: middle;"><i
-                            class="bi bi-x-circle-fill pe-1"></i>Invalid key - try again</span>
+                            class="bi bi-x-circle-fill pe-1"></i>Invalid - re-enter key</span>
                 </div>
             </div>
         </div>
 
-        <div id="card-allscreens" class="card mb-4 d-none">
+        <div id="card-allscreens" class="card mb-4">
             <h5 class="card-header">
                 All Screens (<span id="screen-count">0</span>)
             </h5>
             <div class="card-body">
-                <div id="loading-screens">
+                <p class="card-text">Click "Add" to add a screen to the list of screens to be onboarded to the Vengo ad server. 
+                    To prevent misrepresentation, only online screens can be added.
+                </p>
+                <div id="loading-screens" class="d-none">
                     <div class="d-flex justify-content-center">
                         <div class="spinner-border" role="status">
                             <span class="visually-hidden">Loading...</span>
@@ -93,21 +96,90 @@
                 Screens to Onboard (<span id="onboard-count">0</span>)
             </h5>
             <div class="card-body">
+                <p class="card-text border-1 border-bottom pb-4">Additional data is required to add your screens to the ad exchanges. 
+                    Please select the appropriate categories and fill out the blank sections for each screen.
+                </p>
                 <ul id="list-onboardscreens" class="list-group list-group-flush">
-                    <li class="list-group-item fw-bold">
-                        <div class="row">
+                    <!-- <li class="list-group-item">
+                        <div class="row g-2 pb-2">
                             <div class="col-12">
-                                Screen
+                                <form class="form-floating">
+                                    <input type="text" class="form-control" id="form-devicename" placeholder=""
+                                        value="device.name" readonly>
+                                    <label for="form-devicename">Device Name</label>
+                                </form>
                             </div>
                         </div>
-                    </li>
+                        <div class="row g-2 mx-1 px-1 pb-2 border-start border-end border-bottom border-1 rounded-bottom bg-light">
+                            <div class="col-3">
+                                <div class="form-floating">
+                                    <select class="form-select" id="form-assetcategory">
+                                        <option value="" disabled selected>Select the category</option>
+                                        <option value="1">One</option>
+                                        <option value="2">Two</option>
+                                        <option value="3">Three</option>
+                                    </select>
+                                    <label for="form-assetcategory">Player Category</label>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <form class="form-floating">
+                                    <input type="text" class="form-control" id="form-assetname" placeholder=""
+                                        value="asset.name">
+                                    <label for="form-assetname">Model</label>
+                                </form>
+                            </div>
+                            <div class="col-3">
+                                <div class="input-group">
+                                    <form class="form-floating">
+                                        <input type="text" class="form-control" id="form-assetsize" placeholder=""
+                                            value="asset.size" readonly>
+                                        <label for="form-assetsize">Screen Size</label>
+                                    </form>
+                                    <span class="input-group-text">inch</span>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="form-floating">
+                                    <select class="form-select" id="form-venuecategory">
+                                        <option value="" disabled selected>Select the category</option>
+                                        <option value="1">One</option>
+                                        <option value="2">Two</option>
+                                        <option value="3">Three</option>
+                                    </select>
+                                    <label for="form-venuecategory">Location Category</label>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <form class="form-floating">
+                                    <input type="text" class="form-control" id="form-venuename" placeholder=""
+                                        value="venue.name">
+                                    <label for="form-venuename">Location Name</label>
+                                </form>
+                            </div>
+                            <div class="col-3">
+                                <form class="form-floating">
+                                    <input type="text" class="form-control" id="form-venueid" placeholder=""
+                                        value="venue.id">
+                                    <label for="form-venueid">Location ID</label>
+                                </form>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-floating">
+                                    <textarea class="form-control" id="form-locationaddress" readonly></textarea>
+                                    <label for="form-locationaddress">Location Address</label>
+                                </div>
+                            </div>
+                        </div>
+                    </li> -->
                 </ul>
             </div>
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
-        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src=" https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous">
+        </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
         crossorigin="anonymous"></script>
@@ -115,6 +187,15 @@
     <script src="js/onboarding.js"></script>
     <script>
 
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $("#text-apikey").val("");
+
+            //var screen = { "name": "PI-4135", "id": "129a892c-73f3-44f3-b877-7caeaf0de0e1", "isConnected": false, "createdAt": "2022-06-09T16:31:41.505637+00:00", "playerWidth": 1920, "playerHeight": 1080, "deviceModel": "Browser", "devicePlatform": "browser", "env": { "ad_unit_id": "tb000001" }, "operatingHours": { "day": { "fri": { "end": 61200, "start": 32400, "enable": true }, "mon": { "end": 61200, "start": 32400, "enable": true }, "sat": { "end": 61200, "start": 32400, "enable": true }, "sun": { "end": 61200, "start": 32400, "enable": true }, "thu": { "end": 61200, "start": 32400, "enable": true }, "tue": { "end": 61200, "start": 32400, "enable": true }, "wed": { "end": 61200, "start": 32400, "enable": true } }, "enable": true, "alwaysOn": false }, "playlistsByScreenId": { "nodes": [{ "name": "New Playlist", "content": { "list": [{ "content": { "_ref": { "id": "b031083f-beaa-4b2c-aa72-723fab56cbde", "type": "file" }, "meta": {}, "props": { "duration": 0 } }, "list_id": "a5b764f1-0fea-4608-8cd4-bc65f362c0e4" }, { "content": { "_ref": { "id": "9c3440a2-1c9c-48d5-8b28-821832421a7d", "type": "app" }, "meta": {}, "props": { "duration": 17000 } }, "list_id": "f5244d35-1049-493c-8350-8eb783c11561" }], "props": { "play_mode": "loop", "total_items": 1, "total_durations": 10066, "default_durations": { "app": 60000, "link": 60000, "site": 60000, "image": 10000, "document": 10000 } } } }] } };
+            //parseScreen(screen);
+        });
     </script>
 </body>
 
