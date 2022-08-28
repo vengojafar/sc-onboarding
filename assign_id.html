@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Assign Ad Unit Id</title>
+    </head>
+    <body>
+        <div>
+            Enter API Key:
+            <input type="text" id="input-apikey" />
+            <button id="btn-submit-apikey" onclick="getScreens(screensCallback)">Get Screens</button>
+        </div>
+        <br>
+        <div id="div-screens">
+
+        </div>
+
+        <script>
+            var allScreensQuery = "{allScreens(orderBy: CREATED_AT_DESC) {nodes {id,isConnected,env}}}";
+            var allVallartaScreensQuery = `{allScreens (filter: {screenGroupId: {equalTo: "8a82c2a7-aa35-4677-b4f3-224b9be8d3b9"}}) {nodes {id,isConnected,env,}}}`;
+            var setAdUnitIdMutation = `mutation ($env:JSON) {updateScreenById(input: {id: "$id", env: $env}){screen {env}}}`;
+            var validApiKey = "";
+
+            function formatQuery(query) {
+                return JSON.stringify({
+                    query: "query " + query,
+                    variables: {}
+                });
+            }
+
+            function formatMutation(mutation, env) {
+                return JSON.stringify({
+                    query: mutation,
+                    variables: {env}
+                });
+            }
+
+            function getScreens(screensCallback){
+                validApiKey = document.getElementById("input-apikey").value;
+
+                var xhr = new XMLHttpRequest();
+                xhr.addEventListener("readystatechange", function () {
+                    if (this.readyState === 4 && this.status === 200) {
+                        var qr = JSON.parse(this.responseText);
+                        screensCallback(qr.data.allScreens.nodes);
+                    }
+                });
+                xhr.open("POST", "https://graphql.us.screencloud.com/graphql");
+                xhr.setRequestHeader("Authorization", "Bearer " + validApiKey);
+                xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.send(formatQuery(allScreensQuery));
+                //xhr.send(formatQuery(allVallartaScreensQuery));
+            }
+
+            function screensCallback(screens){
+                screens.forEach(screen => {
+                    screen.env.ad_unit_id = screen.id;
+                    addAdUnitId(screen.id, screen.env);
+                });   
+            }
+
+            function addAdUnitId(id, env) {
+                    var xhr = new XMLHttpRequest();
+                    xhr.addEventListener("readystatechange", function () {
+                        if (this.readyState === 4 && this.status === 200) {
+                            document.getElementById("div-screens").innerHTML += this.responseText + "<br>";
+                        }
+                    });
+                    xhr.open("POST", "https://graphql.us.screencloud.com/graphql");
+                    xhr.setRequestHeader("Authorization", "Bearer " + validApiKey);
+                    xhr.setRequestHeader("Content-Type", "application/json");
+                    xhr.send(formatMutation(setAdUnitIdMutation.replace("$id", id), env));
+                }
+        </script>
+    </body>
+</html>
