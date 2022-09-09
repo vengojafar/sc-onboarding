@@ -36,9 +36,9 @@
         </div>
 
         <div class="card mb-4">
-            <h5 class="card-header">
+            <h6 class="card-header">
                 API Key
-            </h5>
+            </h6>
             <div class="card-body">
                 <p class="card-text">Grant Vengo access to your ScreenCloud account to pull the information needed to
                     onboard your screens to the ad server.
@@ -52,9 +52,9 @@
                         <textarea class="form-control" id="text-apikey" style="height: 100px"></textarea>
                         <label for="text-apikey">API Key</label>
                     </div>
-                    <button id="btn-submit-apikey" type="submit" class="btn btn-primary me-1">Submit Key</button>
+                    <button id="btn-submit-apikey" type="submit" class="btn btn-primary me-1">Submit</button>
                     <span id="icon-success" class="text-success d-none" style="vertical-align: middle;"><i
-                            class="bi bi-check-circle-fill pe-1"></i>Valid</span>
+                            class="bi bi-check-circle-fill pe-1"></i>Valid key</span>
                     <span id="icon-error" class="text-danger d-none" style="vertical-align: middle;"><i
                             class="bi bi-x-circle-fill pe-1"></i>Invalid - re-enter key</span>
                 </div>
@@ -62,13 +62,12 @@
         </div>
 
         <div id="card-allscreens" class="card mb-4">
-            <h5 class="card-header">
+            <h6 class="card-header">
                 All Screens (<span id="screen-count">0</span>)
-            </h5>
+            </h6>
             <div class="card-body">
-                <p class="card-text">Click "Add" to add a screen to the list of screens to be onboarded to the Vengo ad server. 
-                    To prevent misrepresentation, only online screens can be added.
-                </p>
+                <div class="card-text border-1 border-bottom pb-4">Click on a screen to edit the parameters and add to the onboard list.
+                </div>
                 <div id="loading-screens" class="d-none">
                     <div class="d-flex justify-content-center">
                         <div class="spinner-border" role="status">
@@ -77,27 +76,16 @@
                     </div>
                 </div>
                 <ul id="list-allscreens" class="list-group list-group-flush d-none">
-                    <li class="list-group-item fw-bold">
-                        <div class="row">
-                            <div class="col-2">
-                                Status
-                            </div>
-                            <div class="col-10">
-                                Screen
-                            </div>
-                        </div>
-                    </li>
                 </ul>
             </div>
         </div>
 
         <div class="card mb-4">
-            <h5 class="card-header">
+            <h6 class="card-header">
                 Screens to Onboard (<span id="onboard-count">0</span>)
-            </h5>
+            </h6>
             <div class="card-body">
-                <p class="card-text border-1 border-bottom pb-4">Additional data is required to add your screens to the ad exchanges. 
-                    Please select the appropriate categories and fill out the blank sections for each screen.
+                <p class="card-text border-1 border-bottom pb-4">Verify each screen in the list and press Submit to Vengo to onboard. 
                 </p>
                 <ul id="list-onboardscreens" class="list-group list-group-flush">
                     <!-- <li class="list-group-item">
@@ -185,9 +173,6 @@
         crossorigin="anonymous"></script>
     <script src="js/sc_graphql.js"></script>
     <script src="js/onboarding.js"></script>
-    <script>
-
-    </script>
 
     <script>
         $(document).ready(function () {
