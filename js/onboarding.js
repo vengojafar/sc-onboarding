@@ -62,17 +62,17 @@ function populateScreenForms(onboardScreen){
         if (inputtedParametersAreValid(onboardScreen.device.id)) {
             addOrUpdateOnboardedScreen(onboardScreen);
             updateOnboardedScreenList();
+            //TODO Add alert confirmation
+            
+            setEnvInStudio(onboardScreen.device.id, onboardScreen.env, function(){});
+            if (($(this).text()).includes("Add")) {
+                $(`#badges-${onboardScreen.device.id}`).append(`<span class="badge bg-primary">Added</span>`);
+            }
 
-            setEnvInStudio(onboardScreen.device.id, onboardScreen.env, function(){
-                if (($(this).text()).includes("Add")) {
-                    $(`#badges-${onboardScreen.device.id}`).append(`<span class="badge bg-primary">Added</span>`);
-                }
+            $(this).text("Update Screen");
+            new bootstrap.Collapse(`#collapse-${onboardScreen.device.id}`, { toggle: true });
 
-                $(this).text("Update Screen");
-                new bootstrap.Collapse(`#collapse-${onboardScreen.device.id}`, { toggle: true });
-
-                $(`#btn-reload-${onboardScreen.device.id}`).hide();
-            });
+            $(`#btn-reload-${onboardScreen.device.id}`).hide();
         }
         else {
             $(`#formhelp-${onboardScreen.device.id}`).append(`<li>Error: Each parameters needs to be filled in.</li>`);
@@ -193,6 +193,17 @@ function updateOnboardedScreenList()
     $("#list-onboardscreens").empty();
     onboardedScreensArr.forEach(os => {
         $("#list-onboardscreens").append(addToOnboardedScreenList(os));
+
+        $(`#btn-remove-${os.device.id}`).click(function(){
+            var exisitingScreenIndex = onboardedScreensArr.findIndex(s => s.device.id === os.device.id);
+            onboardedScreensArr.splice(exisitingScreenIndex, 1);
+
+            updateOnboardedScreenList();
+            populateScreenForms(os);
+            $(`#btn-reload-${os.device.id}`).show();
+            $(`#btn-save-${os.device.id}`).show();
+            $(`#btn-save-${os.device.id}`).text("Save and Add to List");
+        });
     });
 }
 
@@ -246,8 +257,8 @@ function generateOnboardScreenObj(screen, isConnected)
     onboardScreen.asset.name = screen.env["vengo.asset.name"] != null ? screen.env["vengo.asset.name"] : "";
     onboardScreen.asset.category = screen.env["vengo.asset.category"] != null ? screen.env["vengo.asset.category"] : "";
     onboardScreen.asset.size = screen.env["vengo.asset.size"] != null ? screen.env["vengo.asset.size"] : "";
-    var r = gcd(screen.playerWidth, screen.playerHeight);
-    onboardScreen.asset.aspect_ratio = parseInt(screen.playerWidth) / r + ":" + parseInt(screen.playerHeight) / r;
+    //var r = gcd(screen.playerWidth, screen.playerHeight);
+    onboardScreen.asset.aspect_ratio = parseInt(screen.playerWidth) + ":" + parseInt(screen.playerHeight);
 
     onboardScreen.device.id = screen.id;
     onboardScreen.device.name = screen.name;
@@ -323,13 +334,11 @@ function generateOnboardScreenObj(screen, isConnected)
 }
 
 function addToOnboardedScreenList(screen) {
-    var li = '<li class="list-group-item">';
-    li += '<div class="row">';
-    li += '<div class="col-12">';
-    li += '<p>' + JSON.stringify(screen) + '</p>';
-    li += '</div>';
-    li += '</div>';
-    li += '</li>';
+    var li = 
+    `<li class="list-group-item d-flex justify-content-between align-items-center">
+        <div>${screen.venue.name} - ${screen.venue.id} ${screen.device.name} - ${screen.network_name}</div>
+        <button class="btn btn-danger" id="btn-remove-${screen.device.id}">Remove</button>
+    </li>`;
 
     return li;
 }
