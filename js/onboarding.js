@@ -12,6 +12,18 @@ $(document).ready(function () {
             checkApiKeyAndGetOrgName(apiKey, apiCheckCallback);
         }
     });
+
+    $("#btn-submit-screens").click(function () {
+        var apiKey = $("#text-apikey").val();
+
+        var jObj = { "organization_name" : organizationName,
+                     "screencloud_key" : apiKey,
+                     "email" : "",
+                     "screens" : onboardedScreensArr
+                    };
+
+        console.log(JSON.stringify(jObj));
+    });
 });
 
 function apiCheckCallback(isValid, orgName) {
@@ -52,6 +64,11 @@ function updateAllScreensList()
 }
 
 function populateScreenForms(onboardScreen){
+    $("#form-assetname-" + onboardScreen.device.id).val("");
+    $("#form-assetsize-" + onboardScreen.device.id).val("");
+    $("#form-venuename-" + onboardScreen.device.id).val("");
+    $("#form-venueid-" + onboardScreen.device.id).val("");
+
     $(`#btn-save-${onboardScreen.device.id}`).click(function () {
         $(`#formhelp-${onboardScreen.device.id}`).empty();
 
@@ -60,19 +77,39 @@ function populateScreenForms(onboardScreen){
         }
 
         if (inputtedParametersAreValid(onboardScreen.device.id)) {
-            addOrUpdateOnboardedScreen(onboardScreen);
-            updateOnboardedScreenList();
-            //TODO Add alert confirmation
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This will save the changes to Studio",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Save'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    addOrUpdateOnboardedScreen(onboardScreen);
+                    updateOnboardedScreenList();
+                    //TODO Add alert confirmation
+
+                    setEnvInStudio(onboardScreen.device.id, onboardScreen.env, function () { 
+                        Swal.fire(
+                            'Added!',
+                            'The device has been added to the onboarding list and the changes have been saved to Studio.',
+                            'success'
+                        )
+                    });
+                    if (($(this).text()).includes("Add")) {
+                        $(`#badges-${onboardScreen.device.id}`).append(`<span class="badge bg-primary">Added</span>`);
+                    }
+
+                    $(this).text("Update Screen");
+                    new bootstrap.Collapse(`#collapse-${onboardScreen.device.id}`, { toggle: true });
+
+                    $(`#btn-reload-${onboardScreen.device.id}`).hide();
+                }
+            })
+
             
-            setEnvInStudio(onboardScreen.device.id, onboardScreen.env, function(){});
-            if (($(this).text()).includes("Add")) {
-                $(`#badges-${onboardScreen.device.id}`).append(`<span class="badge bg-primary">Added</span>`);
-            }
-
-            $(this).text("Update Screen");
-            new bootstrap.Collapse(`#collapse-${onboardScreen.device.id}`, { toggle: true });
-
-            $(`#btn-reload-${onboardScreen.device.id}`).hide();
         }
         else {
             $(`#formhelp-${onboardScreen.device.id}`).append(`<li>Error: Each parameters needs to be filled in.</li>`);
@@ -84,15 +121,27 @@ function populateScreenForms(onboardScreen){
             var newOnboardScreen = generateOnboardScreenObj(screen, screen.isConnected);
             var exisitingScreenIndex = allScreensToOnboardArr.findIndex(s => s.device.id === newOnboardScreen.device.id);
             allScreensToOnboardArr[exisitingScreenIndex] = newOnboardScreen;
+            $(`#btn-save-${onboardScreen.device.id}`).show();
             populateScreenForms(newOnboardScreen);
         });
+    });
+
+    $(`#btn-copy-${onboardScreen.device.id}`).click(function () {
+        $("#form-assetname-" + onboardScreen.device.id).val($("#form-assetname-default").val());
+        $("#form-assetsize-" + onboardScreen.device.id).val($("#form-assetsize-default").val());
+        $("#form-venuename-" + onboardScreen.device.id).val($("#form-venuename-default").val());
+        $("#form-assetcategory-" + onboardScreen.device.id).val($("#form-assetcategory-default").val());
+        $("#form-venuecategory-" + onboardScreen.device.id).val($("#form-venuecategory-default").val());
+        $("#form-placementcategory-" + onboardScreen.device.id).val($("#form-placementcategory-default").val());
+        $("#form-structurecategory-" + onboardScreen.device.id).val($("#form-structurecategory-default").val());
     });
 
     $(`#formhelp-${onboardScreen.device.id}`).empty();
     $(`#badges-${onboardScreen.device.id}`).empty();
 
     $(`#badges-${onboardScreen.device.id}`).append(`${(onboardScreen.is_connected ? '<span class="badge bg-success">Online' : '<span class="badge bg-danger">Offline') + '</span> '}`);
-    $(`#badges-${onboardScreen.device.id}`).append(`${(onboardScreen.env.ad_unit_id != null ? '<span class="badge bg-warning">Onboarded</span> ' : "")}`);
+    $(`#badges-${onboardScreen.device.id}`).append(`${(onboardScreen.env.ad_unit_id != null ? '<span class="badge bg-success">Enabled</span> ' : "")}`);
+    $(`#badges-${onboardScreen.device.id}`).append(`${((onboardScreen.env["vengo.onboarded"] != null && onboardScreen.env["vengo.onboarded"] != false) ? '<span class="badge bg-warning">Onboarded</span> ' : "")}`);
 
     $(`#form-devicename-${onboardScreen.device.id}`).val(onboardScreen.device.name);
     $(`#form-locationaddress-${onboardScreen.device.id}`).val(onboardScreen.location.street_address_1);
@@ -228,6 +277,9 @@ function addOrUpdateOnboardedScreen(onboardScreen)
     onboardScreen.env["vengo.venue.name"] = onboardScreen.venue.name;
     onboardScreen.env["vengo.location.structure_type_name"] = onboardScreen.location.structure_type_name;
     onboardScreen.env["vengo.location.placement_type_name"] = onboardScreen.location.placement_type_name;
+    if (onboardScreen.env["vengo.onboarded"] == null){
+        onboardScreen.env["vengo.onboarded"] = false;
+    }
 
     var exisitingScreenIndex = onboardedScreensArr.findIndex(s => s.device.id === onboardScreen.device.id);
     if (exisitingScreenIndex > -1) {
@@ -593,9 +645,10 @@ function addScreenToOnboardListItem(onboardScreen) {
             </div>
             <ul id="formhelp-${onboardScreen.device.id}" class="form-text ms-4">
             </ul>
-            <div class="col-12 text-end">
+            <div class="col-12 d-flex">
+                <button class="btn btn-primary me-auto" id="btn-copy-${onboardScreen.device.id}">Copy from Default</button>
                 <button class="btn btn-primary" id="btn-reload-${onboardScreen.device.id}">Reload from Studio</button>
-                <button class="btn btn-primary" id="btn-save-${onboardScreen.device.id}">Save and Add to List</button>
+                <button class="btn btn-primary ms-1" id="btn-save-${onboardScreen.device.id}">Save and Add to List</button>
             </div>
         </div>
     </li>`;

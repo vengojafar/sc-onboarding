@@ -66,9 +66,229 @@
                 All Screens (<span id="screen-count">0</span>)
             </h6>
             <div class="card-body">
-                <div class="card-text border-1 border-bottom pb-4">Click on a screen to edit the parameters and add to the onboard list.
+                <div class="card-text border-2 border-bottom pb-4">Click on a screen to edit the parameters and add to the onboard list.
+                    <div class="container pt-2">
+                        <div class="py-2">
+                            Default Parameters
+                        </div>
+                        <div class="row g-2">
+                            <div class="col-3">
+                                <div class="form-floating">
+                                    <select class="form-select" id="form-assetcategory-default">
+                                        <option value="" disabled selected>Select type</option>
+                                        <option value="Billboard">Billboard</option>
+                                        <option value="Cinema">Cinema</option>
+                                        <option value="Display Panel">Display Panel</option>
+                                        <option value="Elevator Display">Elevator Display</option>
+                                        <option value="Kiosk">Kiosk</option>
+                                        <option value="Point of Sale">Point of Sale</option>
+                                        <option value="Screen">Screen/TV Monitor</option>
+                                        <option value="Shelter">Shelter</option>
+                                        <option value="Spectacular">Spectacular</option>
+                                        <option value="Vending Machine">Vending Machine</option>
+                                    </select>
+                                    <label for="form-assetcategory-default">Device Category</label>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <form class="form-floating">
+                                    <input type="text" class="form-control" id="form-assetname-default" placeholder="" value="">
+                                    <label for="form-assetname-default">Model</label>
+                                </form>
+                            </div>
+                            <div class="col-3">
+                                <div class="input-group">
+                                    <form class="form-floating">
+                                        <input type="text" class="form-control" id="form-assetsize-default" placeholder=""
+                                            value="">
+                                        <label for="form-assetsize-default">Screen Size</label>
+                                    </form>
+                                    <span class="input-group-text">inch</span>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="form-floating">
+                                    <select class="form-select" id="form-venuecategory-default">
+                                        <option value="" disabled selected>Select venue</option>
+                                        <option value="1.101">Airports</option>
+                                        <option value="11.1101">Apartment Buildings</option>
+                                        <option value="1.101.10101">Arrival Hall</option>
+                                        <option value="1.101.10102">Baggage Claim</option>
+                                        <option value="10.1001">Banks</option>
+                                        <option value="8.804">Bars</option>
+                                        <option value="3.301">Billboards</option>
+                                        <option value="1.102.10201">Bus</option>
+                                        <option value="3.303">Bus Shelters</option>
+                                        <option value="1.102">Buses Displays</option>
+                                        <option value="8.805">Casual Dining</option>
+                                        <option value="2.203.20302">Check Out</option>
+                                        <option value="8.803.80302">Club House</option>
+                                        <option value="6.602">Colleges and Universities</option>
+                                        <option value="8.801.80103">Concert Venues</option>
+                                        <option value="2.205.20501">Concourse</option>
+                                        <option value="2.202">Convenience Stores</option>
+                                        <option value="1.101.10103">Departures Hall</option>
+                                        <option value="2.206">Dispensaries</option>
+                                        <option value="9.901">DMVs</option>
+                                        <option value="5.501">Doctor's Offices</option>
+                                        <option value="6">Education</option>
+                                        <option value="7.701.70101">Elevator (Office)</option>
+                                        <option value="8.807.80702">Elevator (Hotel)</option>
+                                        <option value="11.1101.110102">Elevator (Residential)</option>
+                                        <option value="8">Entertainment</option>
+                                        <option value="10">Financial</option>
+                                        <option value="4.401.40102">Fitness Equipment</option>
+                                        <option value="1.101.10104">Food Court (Airport)</option>
+                                        <option value="2.205.20502">Food Court (Mall)</option>
+                                        <option value="8.802.80202">Food Court (Movie Theater)</option>
+                                        <option value="2.201">Gas Stations</option>
+                                        <option value="1.101.10105">Gates</option>
+                                        <option value="8.808">Golf Carts</option>
+                                        <option value="9">Government</option>
+                                        <option value="2.203">Grocery</option>
+                                        <option value="4.401">Gyms</option>
+                                        <option value="4">Health & Beauty</option>
+                                        <option value="3.301.30102">Highway</option>
+                                        <option value="8.807">Hotels</option>
+                                        <option value="2.204">Liquor Stores</option>
+                                        <option value="4.401.40101">Lobby (Gym)</option>
+                                        <option value="7.701.70102">Lobby (Office)</option>
+                                        <option value="8.802.80201">Lobby (Movie Theater)</option>
+                                        <option value="8.807.80701">Lobby (Hotel)</option>
+                                        <option value="11.1101.110101">Lobby (Residential)</option>
+                                        <option value="1.101.10106">Lounges</option>
+                                        <option value="2.205">Mall</option>
+                                        <option value="9.902">Military Bases</option>
+                                        <option value="8.802">Movie Theaters</option>
+                                        <option value="8.801.80102">Museums and Galleries</option>
+                                        <option value="7.701">Office Buildings</option>
+                                        <option value="3">Outdoor</option>
+                                        <option value="2.208">Parking Garages</option>
+                                        <option value="2.207">Pharmacies</option>
+                                        <option value="1.105.10502">Platform (Subway)</option>
+                                        <option value="1.106.10602">Platform (Train Station)</option>
+                                        <option value="5">Point of Care</option>
+                                        <option value="2.201.20101">Pump</option>
+                                        <option value="8.806">QSR</option>
+                                        <option value="8.801">Recreational Locations</option>
+                                        <option value="11">Residential</option>
+                                        <option value="2">Retail</option>
+                                        <option value="3.301.30101">Roadside</option>
+                                        <option value="4.402">Salons</option>
+                                        <option value="6.601">Schools</option>
+                                        <option value="2.201.20102">Shop</option>
+                                        <option value="2.203.20301">Shop Entrance</option>
+                                        <option value="1.101.10107">Shopping Area</option>
+                                        <option value="4.403">Spas</option>
+                                        <option value="2.205.20503">Spectacular (Malls)</option>
+                                        <option value="3.301.30103">Spectacular (Billboards)</option>
+                                        <option value="8.803.80301">Sport Arena</option>
+                                        <option value="8.803">Sports Entertainment</option>
+                                        <option value="1.105">Subway</option>
+                                        <option value="1.105.10501">Subway Train</option>
+                                        <option value="1.104">Taxi & Rideshare Top</option>
+                                        <option value="1.103">Taxi & Rideshare TV</option>
+                                        <option value="1.102.10202">Terminal</option>
+                                        <option value="8.801.80101">Theme Parks</option>
+                                        <option value="1.106.10601">Train</option>
+                                        <option value="1.106">Train Stations</option>
+                                        <option value="1">Transit</option>
+                                        <option value="3.302">Urban Panels</option>
+                                        <option value="5.502">Veterinary Offices</option>
+                                    </select>
+                                    <label for="form-venuecategory-default">Venue Category</label>
+                                </div>
+                            </div>
+                            <div class="col-9">
+                                <form class="form-floating">
+                                    <input type="text" class="form-control" id="form-venuename-default" placeholder="" value="">
+                                    <label for="form-venuename-default">Location Name</label>
+                                </form>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-floating">
+                                    <select class="form-select" id="form-placementcategory-default">
+                                        <option value="" disabled selected>Select placement</option>
+                                        <option value="2">Above Bar</option>
+                                        <option value="12">Above Food Sales</option>
+                                        <option value="9">Above Interactive Zone</option>
+                                        <option value="32">Above Staircase</option>
+                                        <option value="36">Airport Gate</option>
+                                        <option value="37">Aisle</option>
+                                        <option value="5">At Pump</option>
+                                        <option value="34">Baggage Claim</option>
+                                        <option value="8">Bathroom</option>
+                                        <option value="38">Bathroom Exterior</option>
+                                        <option value="29">Bathroom Men</option>
+                                        <option value="31">Bathroom Unisex</option>
+                                        <option value="30">Bathroom Women</option>
+                                        <option value="17">Cart</option>
+                                        <option value="18">Cart Return</option>
+                                        <option value="39">Checkout Area</option>
+                                        <option value="22">Concourse</option>
+                                        <option value="40">Curbside</option>
+                                        <option value="19">Customer Service Area</option>
+                                        <option value="16">Dining Area</option>
+                                        <option value="7">Elevator</option>
+                                        <option value="25">Elevator Lobby</option>
+                                        <option value="41">Endcap</option>
+                                        <option value="3">Entrance/Exit</option>
+                                        <option value="42">EV Charging Parking</option>
+                                        <option value="21">Fare Gate</option>
+                                        <option value="23">Fare Machines</option>
+                                        <option value="6">Hallway</option>
+                                        <option value="35">In Queue</option>
+                                        <option value="26">In Seating</option>
+                                        <option value="10">Inside Auditorium</option>
+                                        <option value="11">Interior Corridor</option>
+                                        <option value="43">Jet Bridge</option>
+                                        <option value="44">Lobby</option>
+                                        <option value="45">Locker Room Men</option>
+                                        <option value="46">Locker Room Women</option>
+                                        <option value="47">Merge Point</option>
+                                        <option value="1">One On One</option>
+                                        <option value="28">Open Floor</option>
+                                        <option value="24">Parking Lot</option>
+                                        <option value="27">Pet Relief Area</option>
+                                        <option value="20">Platform</option>
+                                        <option value="48">Playground</option>
+                                        <option value="15">Recptacle Area</option>
+                                        <option value="4">Register</option>
+                                        <option value="49">Resident Amenity</option>
+                                        <option value="50">Resident Laundry Room</option>
+                                        <option value="51">Resident Mailroom</option>
+                                        <option value="14">Scoreboard</option>
+                                        <option value="33">Ticketing/Check-in</option>
+                                        <option value="13">Waiting Area</option>
+                                    </select>
+                                    <label for="form-placementcategory-default">Placement Category</label>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-floating">
+                                    <select class="form-select" id="form-structurecategory-default">
+                                        <option value="" disabled selected>Select structure</option>
+                                        <option value="1">Ceiling</option>
+                                        <option value="13">Column</option>
+                                        <option value="8">Elevator</option>
+                                        <option value="3">Exterior Wall</option>
+                                        <option value="11">Floor</option>
+                                        <option value="9">Freestanding</option>
+                                        <option value="10">Furniture</option>
+                                        <option value="2">Interior Wall</option>
+                                        <option value="12">Rooftop</option>
+                                        <option value="7">Stairs</option>
+                                        <option value="4">Tablet</option>
+                                        <option value="6">Vechicle Exterior</option>
+                                        <option value="5">Vehicle Interior</option>
+                                    </select>
+                                    <label for="form-structurecategory-default">Structure Category</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div id="loading-screens" class="d-none">
+                <div id="loading-screens" class="d-none pt-2">
                     <div class="d-flex justify-content-center">
                         <div class="spinner-border" role="status">
                             <span class="visually-hidden">Loading...</span>
@@ -87,8 +307,8 @@
             <div class="card-body">
                 <ul id="list-onboardscreens" class="list-group list-group-flush">
                 </ul>
-                <p class="card-text text-end">
-                    <button class="btn btn-primary">Submit</button>
+                <p class="card-text text-end pt-3">
+                    <button id="btn-submit-screens" class="btn btn-primary">Submit</button>
                 </p>
             </div>
         </div>
@@ -100,17 +320,10 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
         crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="js/sc_graphql.js"></script>
     <script src="js/onboarding.js"></script>
-
-    <script>
-        $(document).ready(function () {
-            $("#text-apikey").val("");
-
-            //var screen = { "name": "PI-4135", "id": "129a892c-73f3-44f3-b877-7caeaf0de0e1", "isConnected": false, "createdAt": "2022-06-09T16:31:41.505637+00:00", "playerWidth": 1920, "playerHeight": 1080, "deviceModel": "Browser", "devicePlatform": "browser", "env": { "ad_unit_id": "tb000001" }, "operatingHours": { "day": { "fri": { "end": 61200, "start": 32400, "enable": true }, "mon": { "end": 61200, "start": 32400, "enable": true }, "sat": { "end": 61200, "start": 32400, "enable": true }, "sun": { "end": 61200, "start": 32400, "enable": true }, "thu": { "end": 61200, "start": 32400, "enable": true }, "tue": { "end": 61200, "start": 32400, "enable": true }, "wed": { "end": 61200, "start": 32400, "enable": true } }, "enable": true, "alwaysOn": false }, "playlistsByScreenId": { "nodes": [{ "name": "New Playlist", "content": { "list": [{ "content": { "_ref": { "id": "b031083f-beaa-4b2c-aa72-723fab56cbde", "type": "file" }, "meta": {}, "props": { "duration": 0 } }, "list_id": "a5b764f1-0fea-4608-8cd4-bc65f362c0e4" }, { "content": { "_ref": { "id": "9c3440a2-1c9c-48d5-8b28-821832421a7d", "type": "app" }, "meta": {}, "props": { "duration": 17000 } }, "list_id": "f5244d35-1049-493c-8350-8eb783c11561" }], "props": { "play_mode": "loop", "total_items": 1, "total_durations": 10066, "default_durations": { "app": 60000, "link": 60000, "site": 60000, "image": 10000, "document": 10000 } } } }] } };
-            //parseScreen(screen);
-        });
-    </script>
+    
 </body>
 
 </html>
