@@ -16,13 +16,20 @@ $(document).ready(function () {
     $("#btn-submit-screens").click(function () {
         var apiKey = $("#text-apikey").val();
 
-        var jObj = { "organization_name" : organizationName,
-                     "screencloud_key" : apiKey,
-                     "email" : "",
-                     "screens" : onboardedScreensArr
-                    };
+        var jObj = {
+            "organization_name": organizationName,
+            "screencloud_key": apiKey,
+            "email": "",
+            "screens": onboardedScreensArr
+        };
 
-        console.log(JSON.stringify(jObj));
+        var csvHtml = "";
+        onboardedScreensArr.forEach(onboardScreen => {
+            csvHtml += `${onboardScreen.network_name};${onboardScreen.venue.id};${onboardScreen.venue.name};${onboardScreen.venue.category_name};${onboardScreen.asset.name};${onboardScreen.asset.category};${onboardScreen.asset.size};${onboardScreen.asset.aspect_ratio};"video/mp4";${onboardScreen.device.id};${onboardScreen.device.name};${onboardScreen.device.description};${onboardScreen.location.street_address_1};${onboardScreen.location.street_address_2};${onboardScreen.location.city};${onboardScreen.location.state};${onboardScreen.location.postal_code};${onboardScreen.location.country};${onboardScreen.location.latitude};${onboardScreen.location.longitude};${onboardScreen.location.structure_type_name};${onboardScreen.location.placement_type_name};;;${onboardScreen.slot.height};${onboardScreen.slot.width};${onboardScreen.slot.top_left_x};${onboardScreen.slot.top_left_y};${onboardScreen.slot.duration};${onboardScreen.slot.share_of_voice};${onboardScreen.restrictions.creative_categories};${onboardScreen.restrictions.other};${onboardScreen.operating_hours.always_open} <br>`;
+        });
+
+        $("#json-string").text(JSON.stringify(jObj));
+        $("#csv-string").html(csvHtml);
     });
 });
 
@@ -39,8 +46,7 @@ function apiCheckCallback(isValid, orgName) {
     }
 }
 
-function allScreensCallback(screensArr)
-{
+function allScreensCallback(screensArr) {
     $("#loading-screens").addClass("d-none");
     $("#list-allscreens").removeClass("d-none");
 
@@ -52,8 +58,7 @@ function allScreensCallback(screensArr)
     updateAllScreensList();
 }
 
-function updateAllScreensList()
-{
+function updateAllScreensList() {
     $("#list-allscreens").empty();
     $("#screen-count").text(allScreensToOnboardArr.length)
 
@@ -63,7 +68,7 @@ function updateAllScreensList()
     });
 }
 
-function populateScreenForms(onboardScreen){
+function populateScreenForms(onboardScreen) {
     $("#form-assetname-" + onboardScreen.device.id).val("");
     $("#form-assetsize-" + onboardScreen.device.id).val("");
     $("#form-venuename-" + onboardScreen.device.id).val("");
@@ -91,7 +96,7 @@ function populateScreenForms(onboardScreen){
                     updateOnboardedScreenList();
                     //TODO Add alert confirmation
 
-                    setEnvInStudio(onboardScreen.device.id, onboardScreen.env, function () { 
+                    setEnvInStudio(onboardScreen.device.id, onboardScreen.env, function () {
                         Swal.fire(
                             'Added!',
                             'The device has been added to the onboarding list and the changes have been saved to Studio.',
@@ -109,7 +114,7 @@ function populateScreenForms(onboardScreen){
                 }
             })
 
-            
+
         }
         else {
             $(`#formhelp-${onboardScreen.device.id}`).append(`<li>Error: Each parameters needs to be filled in.</li>`);
@@ -117,7 +122,7 @@ function populateScreenForms(onboardScreen){
     });
 
     $(`#btn-reload-${onboardScreen.device.id}`).click(function () {
-        getScreenById(onboardScreen.device.id, function(screen) {
+        getScreenById(onboardScreen.device.id, function (screen) {
             var newOnboardScreen = generateOnboardScreenObj(screen, screen.isConnected);
             var exisitingScreenIndex = allScreensToOnboardArr.findIndex(s => s.device.id === newOnboardScreen.device.id);
             allScreensToOnboardArr[exisitingScreenIndex] = newOnboardScreen;
@@ -224,26 +229,24 @@ function populateScreenForms(onboardScreen){
     }
 }
 
-function inputtedParametersAreValid(id)
-{
+function inputtedParametersAreValid(id) {
     return ($("#form-assetcategory-" + id).val() != null &&
-            $("#form-venuecategory-" + id).val() != null &&
-            $("#form-placementcategory-" + id).val() != null &&
-            $("#form-structurecategory-" + id).val() != null &&
-            $("#form-assetname-" + id).val() != '' &&
-            $("#form-assetsize-" + id).val() != '' &&
-            $("#form-venuename-" + id).val() != '' &&
-            $("#form-venueid-" + id).val() != '');
+        $("#form-venuecategory-" + id).val() != null &&
+        $("#form-placementcategory-" + id).val() != null &&
+        $("#form-structurecategory-" + id).val() != null &&
+        $("#form-assetname-" + id).val() != '' &&
+        $("#form-assetsize-" + id).val() != '' &&
+        $("#form-venuename-" + id).val() != '' &&
+        $("#form-venueid-" + id).val() != '');
 }
 
-function updateOnboardedScreenList()
-{
+function updateOnboardedScreenList() {
     $("#onboard-count").text(onboardedScreensArr.length)
     $("#list-onboardscreens").empty();
     onboardedScreensArr.forEach(os => {
         $("#list-onboardscreens").append(addToOnboardedScreenList(os));
 
-        $(`#btn-remove-${os.device.id}`).click(function(){
+        $(`#btn-remove-${os.device.id}`).click(function () {
             var exisitingScreenIndex = onboardedScreensArr.findIndex(s => s.device.id === os.device.id);
             onboardedScreensArr.splice(exisitingScreenIndex, 1);
 
@@ -256,8 +259,7 @@ function updateOnboardedScreenList()
     });
 }
 
-function addOrUpdateOnboardedScreen(onboardScreen)
-{
+function addOrUpdateOnboardedScreen(onboardScreen) {
     var id = onboardScreen.device.id;
     onboardScreen.asset.name = $("#form-assetname-" + id).val();
     onboardScreen.asset.size = $("#form-assetsize-" + id).val();
@@ -277,7 +279,7 @@ function addOrUpdateOnboardedScreen(onboardScreen)
     onboardScreen.env["vengo.venue.name"] = onboardScreen.venue.name;
     onboardScreen.env["vengo.location.structure_type_name"] = onboardScreen.location.structure_type_name;
     onboardScreen.env["vengo.location.placement_type_name"] = onboardScreen.location.placement_type_name;
-    if (onboardScreen.env["vengo.onboarded"] == null){
+    if (onboardScreen.env["vengo.onboarded"] == null) {
         onboardScreen.env["vengo.onboarded"] = false;
     }
 
@@ -285,14 +287,12 @@ function addOrUpdateOnboardedScreen(onboardScreen)
     if (exisitingScreenIndex > -1) {
         onboardedScreensArr[exisitingScreenIndex] = onboardScreen;
     }
-    else
-    {
+    else {
         onboardedScreensArr.push(onboardScreen);
     }
 }
 
-function generateOnboardScreenObj(screen, isConnected)
-{
+function generateOnboardScreenObj(screen, isConnected) {
     var onboardScreen = {
         "network_name": organizationName,
         "asset": {},
@@ -302,8 +302,8 @@ function generateOnboardScreenObj(screen, isConnected)
         "slot": {},
         "restrictions": {},
         "operating_hours": {},
-        "is_connected" : isConnected,
-        "env" : screen.env
+        "is_connected": isConnected,
+        "env": screen.env
     };
 
     onboardScreen.asset.name = screen.env["vengo.asset.name"] != null ? screen.env["vengo.asset.name"] : "";
@@ -311,6 +311,7 @@ function generateOnboardScreenObj(screen, isConnected)
     onboardScreen.asset.size = screen.env["vengo.asset.size"] != null ? screen.env["vengo.asset.size"] : "";
     //var r = gcd(screen.playerWidth, screen.playerHeight);
     onboardScreen.asset.aspect_ratio = parseInt(screen.playerWidth) + ":" + parseInt(screen.playerHeight);
+    onboardScreen.asset.mime = "video/mp4";
 
     onboardScreen.device.id = screen.id;
     onboardScreen.device.name = screen.name;
@@ -321,13 +322,14 @@ function generateOnboardScreenObj(screen, isConnected)
     onboardScreen.venue.category_name = screen.env["vengo.venue.category_name"] != null ? screen.env["vengo.venue.category_name"] : "";
 
     var state = "";
+    var address = "";
     if (screen.env.sc_address != undefined && screen.env.sc_address.endsWith("USA")) {
-        screen.env.sc_address = screen.env.sc_address.replace(", USA", "");
-        state = screen.env.sc_address.substring(screen.env.sc_address.lastIndexOf(", ") + 2);
+        address = screen.env.sc_address.replace(", USA", "");
+        state = address.substring(address.lastIndexOf(", ") + 2);
         //screen.env.sc_address = screen.env.sc_address.replace((", " + state), "");
     }
 
-    onboardScreen.location.street_address_1 = screen.env.sc_address === undefined ? "" : screen.env.sc_address;
+    onboardScreen.location.street_address_1 = screen.env.sc_address === undefined ? "" : address;
     onboardScreen.location.street_address_2 = "";
     onboardScreen.location.city = screen.env.sc_locality === undefined ? "" : screen.env.sc_locality;
     onboardScreen.location.state = state;
@@ -386,8 +388,8 @@ function generateOnboardScreenObj(screen, isConnected)
 }
 
 function addToOnboardedScreenList(screen) {
-    var li = 
-    `<li class="list-group-item d-flex justify-content-between align-items-center">
+    var li =
+        `<li class="list-group-item d-flex justify-content-between align-items-center">
         <div>${screen.venue.name} - ${screen.venue.id} ${screen.device.name} - ${screen.network_name}</div>
         <button class="btn btn-danger" id="btn-remove-${screen.device.id}">Remove</button>
     </li>`;
@@ -396,8 +398,8 @@ function addToOnboardedScreenList(screen) {
 }
 
 function addScreenToOnboardListItem(onboardScreen) {
-    var li =   
-    `<li class="list-group-item mt-2 pb-3">
+    var li =
+        `<li class="list-group-item mt-2 pb-3">
         <div class="row pb-2">
             <div id="badges-${onboardScreen.device.id}" class="col-12">
             </div>
@@ -652,7 +654,7 @@ function addScreenToOnboardListItem(onboardScreen) {
             </div>
         </div>
     </li>`;
-    
+
     return li;
 }
 
