@@ -49,24 +49,48 @@ function apiCheckCallback(isValid, orgName) {
 }
 
 function allScreensCallback(screensArr) {
-    $("#loading-screens").addClass("d-none");
-    $("#list-allscreens").removeClass("d-none");
-
     screensArr.forEach(screen => {
         var onboardScreen = generateOnboardScreenObj(screen, screen.isConnected);
         allScreensToOnboardArr.push(onboardScreen);
     });
 
     updateAllScreensList();
+
+    $("#loading-screens").addClass("d-none");
+    $("#acc-allscreens").removeClass("d-none");
+    $("#collapse-online-notonboarded").addClass("show");
+
+    $("#org-name").text(organizationName);
+    $("#screen-count").text(allScreensToOnboardArr.length)
 }
 
 function updateAllScreensList() {
-    $("#list-allscreens").empty();
-    $("#screen-count").text(allScreensToOnboardArr.length)
-
+    //$("#list-allscreens").empty();
+    $("#list-online-notonboarded").empty();
+    $("#list-online-onboarded").empty();
+    $("#list-offline-onboarded").empty();
+    $("#list-offline").empty();
+    
     allScreensToOnboardArr.forEach(onboardScreen => {
-        $("#list-allscreens").append(addScreenToOnboardListItem(onboardScreen));
+        //$("#list-allscreens").append(addScreenToOnboardListItem(onboardScreen));
+        if (onboardScreen.is_connected){
+            if (onboardScreen.env.ad_unit_id != null){
+                $("#list-online-onboarded").append(addScreenToOnboardListItem(onboardScreen));
+            }
+            else {
+                $("#list-online-notonboarded").append(addScreenToOnboardListItem(onboardScreen));
+            }
+        }
+        else {
+            if (onboardScreen.env.ad_unit_id != null) {
+                $("#list-offline-onboarded").append(addScreenToOnboardListItem(onboardScreen));
+            }
+            else {
+                $("#list-offline").append(addScreenToOnboardListItem(onboardScreen));
+            }
+        }
         populateScreenForms(onboardScreen);
+        console.log(`Loaded ${onboardScreen.device.id}`)
     });
 }
 
@@ -413,7 +437,7 @@ function addToOnboardedScreenList(screen) {
 
 function addScreenToOnboardListItem(onboardScreen) {
     var li =
-        `<li class="list-group-item mt-2 pb-3">
+        `<li class="list-group-item mt-2 pb-3 px-0">
         <div class="row pb-2">
             <div id="badges-${onboardScreen.device.id}" class="col-12">
             </div>

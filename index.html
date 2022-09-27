@@ -32,13 +32,13 @@
 
     <div class="container">
         <div class="row">
-            <h1 class="display-4">Onboarding Tool</h1>
-            <p class="lead">Enables your ScreenCloud screen to receive programmatic ads from the Vengo Ad Server</p>
+            <h1 class="fw-bold">Ad Server Onboarding Tool</h1>
+            <p>Enables your ScreenCloud screen to receive programmatic ads from the Vengo Ad Server</p>
         </div>
 
         <div class="card mb-4">
-            <h6 class="card-header">
-                API Key
+            <h6 class="card-header fw-bold">
+                ScreenCloud Access
             </h6>
             <div class="card-body">
                 <p class="card-text">Grant Vengo access to your ScreenCloud account to pull the information needed to
@@ -46,14 +46,25 @@
                 </p>
                 <p>Instructions on how to generate an API key/token
                     can be found <a href="https://screencloud.github.io/signage-next-graphql-docs/get-an-api-token"
-                        target="_blank">here</a>. When selecting permissions, only check App, App Instance, Media,
-                    Playlist, and Screen. </p>
+                        target="_blank">here</a>. When selecting permissions, check:
+                    <ul>
+                        <li>App</li>
+                        <li>App Instance</li>
+                        <li>Media</li>
+                        <li>Playlist</li>
+                        <li>Screen</li>
+                    </ul>
+                </p>
                 <div class="form">
-                    <div class="form-floating mb-3">
+                    <div class="form-floating m-1">
                         <textarea class="form-control" id="text-apikey" style="height: 100px"></textarea>
                         <label for="text-apikey">API Key</label>
                     </div>
-                    <button id="btn-submit-apikey" type="submit" class="btn btn-primary me-1">Submit</button>
+                    <form class="form-floating m-1">
+                        <input type="email" class="form-control" id="form-contact-email" placeholder="" value="">
+                        <label for="form-contact-email">Contact's Email Address</label>
+                    </form>
+                    <button id="btn-submit-apikey" type="submit" class="btn btn-primary m-1">Submit</button>
                     <span id="icon-success" class="text-success d-none" style="vertical-align: middle;"><i
                             class="bi bi-check-circle-fill pe-1"></i>Valid key</span>
                     <span id="icon-error" class="text-danger d-none" style="vertical-align: middle;"><i
@@ -63,13 +74,16 @@
         </div>
 
         <div id="card-allscreens" class="card mb-4">
-            <h6 class="card-header">
-                All Screens (<span id="screen-count">0</span>)
+            <h6 class="card-header fw-bold">
+                <span id="org-name"></span> Screens (<span id="screen-count">0</span>)
             </h6>
             <div class="card-body">
-                <div class="card-text border-2 border-bottom pb-4">Click on a screen to edit the parameters and add to the onboard list.
+                <div class="card-text pb-4">
+                    Click on a screen to edit the parameters and add to the onboard list.
+                </div>
+                <div class="card-text border-2 border-bottom border-top pb-4">
                     <div class="container pt-2">
-                        <div class="py-2">
+                        <div class="py-2 fw-bold">
                             Default Parameters
                         </div>
                         <div class="row g-2">
@@ -100,8 +114,8 @@
                             <div class="col-md-3 col-12">
                                 <div class="input-group">
                                     <form class="form-floating">
-                                        <input type="text" class="form-control" id="form-assetsize-default" placeholder=""
-                                            value="">
+                                        <input type="number" class="form-control" id="form-assetsize-default" placeholder=""
+                                            value="" min="1">
                                         <label for="form-assetsize-default">Screen Size</label>
                                     </form>
                                     <span class="input-group-text">inch</span>
@@ -303,13 +317,67 @@
                         </div>
                     </div>
                 </div>
-                <ul id="list-allscreens" class="list-group list-group-flush d-none">
-                </ul>
+                <div id="acc-allscreens" class="accordion pt-4 d-none">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-online-notonboarded">
+                                Online, Not Onboarded
+                            </button>
+                        </h2>
+                        <div id="collapse-online-notonboarded" class="accordion-collapse collapse" data-bs-parent="#acc-allscreens">
+                            <div class="accordion-body py-0">
+                                <ul id="list-online-notonboarded" class="list-group list-group-flush">
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-online-onboarded">
+                                Online, Onboarded
+                            </button>
+                        </h2>
+                        <div id="collapse-online-onboarded" class="accordion-collapse collapse" data-bs-parent="#acc-allscreens">
+                            <div class="accordion-body py-0">
+                                <ul id="list-online-onboarded" class="list-group list-group-flush">
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapse-offline-onboarded">
+                                Offline, Onboarded
+                            </button>
+                        </h2>
+                        <div id="collapse-offline-onboarded" class="accordion-collapse collapse" data-bs-parent="#acc-allscreens">
+                            <div class="accordion-body py-0">
+                                <ul id="list-offline-onboarded" class="list-group list-group-flush">
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapse-offline">
+                                Offline
+                            </button>
+                        </h2>
+                        <div id="collapse-offline" class="accordion-collapse collapse" data-bs-parent="#acc-allscreens">
+                            <div class="accordion-body py-0">
+                                <ul id="list-offline" class="list-group list-group-flush">
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
         <div id="div-onboard" class="card mb-4 d-none">
-            <h6 class="card-header">
+            <h6 class="card-header fw-bold">
                 Screens to Onboard (<span id="onboard-count">0</span>)
             </h6>
             <div class="card-body">
