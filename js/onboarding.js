@@ -30,7 +30,7 @@ $(document).ready(function () {
             csvHtml += `${onboardScreen.network_name};${onboardScreen.venue.id};${onboardScreen.venue.name};${onboardScreen.venue.category_name};${onboardScreen.asset.name};${onboardScreen.asset.category};${onboardScreen.asset.size};${onboardScreen.asset.aspect_ratio};"video/mp4";${onboardScreen.device.id};${onboardScreen.device.name};${onboardScreen.device.description};${onboardScreen.location.street_address_1};${onboardScreen.location.street_address_2};${onboardScreen.location.city};${onboardScreen.location.state};${onboardScreen.location.postal_code};${onboardScreen.location.country};${onboardScreen.location.latitude};${onboardScreen.location.longitude};${onboardScreen.location.structure_type_name};${onboardScreen.location.placement_type_name};;;${onboardScreen.slot.height};${onboardScreen.slot.width};${onboardScreen.slot.top_left_x};${onboardScreen.slot.top_left_y};${onboardScreen.slot.duration};${onboardScreen.slot.share_of_voice};${onboardScreen.restrictions.creative_categories};${onboardScreen.restrictions.other};${onboardScreen.operating_hours.always_open} <br>`;
         });
 
-        $("#json-string").text(JSON.stringify(jObj));
+        $("#json-string").text(JSON.stringify(jObj, undefined, 2));
         $("#csv-string").html(csvHtml);
     });
 });
