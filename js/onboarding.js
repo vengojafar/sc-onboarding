@@ -135,6 +135,7 @@ function populateScreenForms(onboardScreen) {
         $("#form-assetname-" + onboardScreen.device.id).val($("#form-assetname-default").val());
         $("#form-assetsize-" + onboardScreen.device.id).val($("#form-assetsize-default").val());
         $("#form-venuename-" + onboardScreen.device.id).val($("#form-venuename-default").val());
+        $("#form-venueplacement-" + onboardScreen.device.id).val($("#form-venueplacement-default").val());
         $("#form-assetcategory-" + onboardScreen.device.id).val($("#form-assetcategory-default").val());
         $("#form-venuecategory-" + onboardScreen.device.id).val($("#form-venuecategory-default").val());
         $("#form-placementcategory-" + onboardScreen.device.id).val($("#form-placementcategory-default").val());
@@ -145,6 +146,7 @@ function populateScreenForms(onboardScreen) {
     $(`#badges-${onboardScreen.device.id}`).empty();
 
     $(`#badges-${onboardScreen.device.id}`).append(`${(onboardScreen.is_connected ? '<span class="badge bg-success">Online' : '<span class="badge bg-danger">Offline') + '</span> '}`);
+    $(`#badges-${onboardScreen.device.id}`).append(`${(onboardScreen.location.street_address_1 == "" ? '<span class="badge bg-danger">Address Missing</span> ' : "")}`);
     $(`#badges-${onboardScreen.device.id}`).append(`${(onboardScreen.env.ad_unit_id != null ? '<span class="badge bg-success">Enabled</span> ' : "")}`);
     $(`#badges-${onboardScreen.device.id}`).append(`${((onboardScreen.env["vengo.onboarded"] != null && onboardScreen.env["vengo.onboarded"] != false) ? '<span class="badge bg-warning">Onboarded</span> ' : "")}`);
 
@@ -170,6 +172,10 @@ function populateScreenForms(onboardScreen) {
 
     if (onboardScreen.venue.id != "") {
         $("#form-venueid-" + onboardScreen.device.id).val(onboardScreen.venue.id);
+    }
+
+    if (onboardScreen.venue.placement != "") {
+        $("#form-venueplacement-" + onboardScreen.device.id).val(onboardScreen.venue.placement);
     }
 
     var options = $("#form-assetcategory-" + onboardScreen.device.id)[0].options;
@@ -237,6 +243,7 @@ function inputtedParametersAreValid(id) {
         $("#form-assetname-" + id).val() != '' &&
         $("#form-assetsize-" + id).val() != '' &&
         $("#form-venuename-" + id).val() != '' &&
+        $("#form-venueplacement-" + id).val() != '' &&
         $("#form-venueid-" + id).val() != '');
 }
 
@@ -261,22 +268,27 @@ function updateOnboardedScreenList() {
 
 function addOrUpdateOnboardedScreen(onboardScreen) {
     var id = onboardScreen.device.id;
+    
     onboardScreen.asset.name = $("#form-assetname-" + id).val();
     onboardScreen.asset.size = $("#form-assetsize-" + id).val();
     onboardScreen.venue.id = $("#form-venueid-" + id).val();
     onboardScreen.venue.name = $("#form-venuename-" + id).val();
+    onboardScreen.venue.placement = $("#form-venueplacement-" + id).val();
     onboardScreen.asset.category = $("#form-assetcategory-" + id).val();
     onboardScreen.venue.category_name = $("#form-venuecategory-" + id).val();
     onboardScreen.location.structure_type_name = $("#form-structurecategory-" + id).val();
     onboardScreen.location.placement_type_name = $("#form-placementcategory-" + id).val();
+    onboardScreen.device.name = `${onboardScreen.venue.name} - ${onboardScreen.venue.id} ${onboardScreen.venue.placement} - ${onboardScreen.network_name}`;
 
     onboardScreen.env["ad_unit_id"] = onboardScreen.device.id;
+    onboardScreen.env["vengo.device.name"] = onboardScreen.device.name;
     onboardScreen.env["vengo.asset.name"] = onboardScreen.asset.name;
     onboardScreen.env["vengo.asset.size"] = onboardScreen.asset.size;
     onboardScreen.env["vengo.asset.category"] = onboardScreen.asset.category;
     onboardScreen.env["vengo.venue.category_name"] = onboardScreen.venue.category_name;
     onboardScreen.env["vengo.venue.id"] = onboardScreen.venue.id;
     onboardScreen.env["vengo.venue.name"] = onboardScreen.venue.name;
+    onboardScreen.env["vengo.venue.placement"] = onboardScreen.venue.placement;
     onboardScreen.env["vengo.location.structure_type_name"] = onboardScreen.location.structure_type_name;
     onboardScreen.env["vengo.location.placement_type_name"] = onboardScreen.location.placement_type_name;
     if (onboardScreen.env["vengo.onboarded"] == null) {
@@ -319,6 +331,7 @@ function generateOnboardScreenObj(screen, isConnected) {
 
     onboardScreen.venue.id = screen.env["vengo.venue.id"] != null ? screen.env["vengo.venue.id"] : "";
     onboardScreen.venue.name = screen.env["vengo.venue.name"] != null ? screen.env["vengo.venue.name"] : "";
+    onboardScreen.venue.placement = screen.env["vengo.venue.placement"] != null ? screen.env["vengo.venue.placement"] : "";
     onboardScreen.venue.category_name = screen.env["vengo.venue.category_name"] != null ? screen.env["vengo.venue.category_name"] : "";
 
     var state = "";
@@ -390,7 +403,7 @@ function generateOnboardScreenObj(screen, isConnected) {
 function addToOnboardedScreenList(screen) {
     var li =
         `<li class="list-group-item d-flex justify-content-between align-items-center">
-        <div>${screen.venue.name} - ${screen.venue.id} ${screen.device.name} - ${screen.network_name}</div>
+        <div>${screen.device.name}</div>
         <button class="btn btn-danger" id="btn-remove-${screen.device.id}">Remove</button>
     </li>`;
 
@@ -417,7 +430,7 @@ function addScreenToOnboardListItem(onboardScreen) {
             </div>
         </div>
         <div id="collapse-${onboardScreen.device.id}" class="row g-2 mx-1 px-1 pb-2 border-start border-end border-bottom border-1 rounded-bottom bg-light collapse">
-            <div class="col-3">
+            <div class="col-md-3 col-12">
                 <div class="form-floating">
                     <select class="form-select" id="form-assetcategory-${onboardScreen.device.id}">
                         <option value="" disabled selected>Select type</option>
@@ -435,14 +448,14 @@ function addScreenToOnboardListItem(onboardScreen) {
                     <label for="form-assetcategory-${onboardScreen.device.id}">Device Category</label>
                 </div>
             </div>
-            <div class="col-6">
+            <div class="col-md-6 col-12">
                 <form class="form-floating">
                     <input type="text" class="form-control" id="form-assetname-${onboardScreen.device.id}" placeholder=""
                         value="">
                     <label for="form-assetname-${onboardScreen.device.id}">Model</label>
                 </form>
             </div>
-            <div class="col-3">
+            <div class="col-md-3 col-12">
                 <div class="input-group">
                     <form class="form-floating">
                         <input type="text" class="form-control" id="form-assetsize-${onboardScreen.device.id}" placeholder=""
@@ -452,7 +465,28 @@ function addScreenToOnboardListItem(onboardScreen) {
                     <span class="input-group-text">inch</span>
                 </div>
             </div>
-            <div class="col-3">
+            <div class="col-md-2 col-12">
+                <form class="form-floating">
+                    <input type="text" class="form-control" id="form-venueid-${onboardScreen.device.id}" placeholder=""
+                        value="">
+                    <label for="form-venueid-${onboardScreen.device.id}">Location ID</label>
+                </form>
+            </div>
+            <div class="col-md-5 col-12">
+                <form class="form-floating">
+                    <input type="text" class="form-control" id="form-venuename-${onboardScreen.device.id}" placeholder=""
+                        value="">
+                    <label for="form-venuename-${onboardScreen.device.id}">Location Name</label>
+                </form>
+            </div>
+            <div class="col-md-5 col-12">
+                <form class="form-floating">
+                    <input type="text" class="form-control" id="form-venueplacement-${onboardScreen.device.id}" placeholder=""
+                        value="">
+                    <label for="form-venueplacement-${onboardScreen.device.id}">Location Placement</label>
+                </form>
+            </div>
+            <div class="col-md-4 col-12">
                 <div class="form-floating">
                     <select class="form-select" id="form-venuecategory-${onboardScreen.device.id}">
                         <option value="" disabled selected>Select venue</option>
@@ -545,21 +579,7 @@ function addScreenToOnboardListItem(onboardScreen) {
                     <label for="form-venuecategory-${onboardScreen.device.id}">Venue Category</label>
                 </div>
             </div>
-            <div class="col-6">
-                <form class="form-floating">
-                    <input type="text" class="form-control" id="form-venuename-${onboardScreen.device.id}" placeholder=""
-                        value="">
-                    <label for="form-venuename-${onboardScreen.device.id}">Location Name</label>
-                </form>
-            </div>
-            <div class="col-3">
-                <form class="form-floating">
-                    <input type="text" class="form-control" id="form-venueid-${onboardScreen.device.id}" placeholder=""
-                        value="">
-                    <label for="form-venueid-${onboardScreen.device.id}">Location ID</label>
-                </form>
-            </div>
-            <div class="col-6">
+            <div class="col-md-4 col-12">
                 <div class="form-floating">
                     <select class="form-select" id="form-placementcategory-${onboardScreen.device.id}">
                         <option value="" disabled selected>Select placement</option>
@@ -618,7 +638,7 @@ function addScreenToOnboardListItem(onboardScreen) {
                     <label for="form-placementcategory-${onboardScreen.device.id}">Placement Category</label>
                 </div>
             </div>
-            <div class="col-6">
+            <div class="col-md-4 col-12">
                 <div class="form-floating">
                     <select class="form-select" id="form-structurecategory-${onboardScreen.device.id}">
                         <option value="" disabled selected>Select structure</option>
@@ -649,7 +669,7 @@ function addScreenToOnboardListItem(onboardScreen) {
             </ul>
             <div class="col-12 d-flex">
                 <button class="btn btn-primary me-auto" id="btn-copy-${onboardScreen.device.id}">Copy from Default</button>
-                <button class="btn btn-primary" id="btn-reload-${onboardScreen.device.id}">Reload from Studio</button>
+                <button class="btn btn-primary ms-1" id="btn-reload-${onboardScreen.device.id}">Reload from Studio</button>
                 <button class="btn btn-primary ms-1" id="btn-save-${onboardScreen.device.id}">Save and Add to List</button>
             </div>
         </div>
