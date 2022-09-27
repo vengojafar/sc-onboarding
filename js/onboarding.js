@@ -2,6 +2,8 @@ var organizationName = "";
 var onboardedScreensArr = [];
 var allScreensToOnboardArr = [];
 
+toastr.options.escapeHtml = true;
+
 $(document).ready(function () {
     $("#btn-submit-apikey").click(function () {
         var apiKey = $("#text-apikey").val();
@@ -94,14 +96,9 @@ function populateScreenForms(onboardScreen) {
                 if (result.isConfirmed) {
                     addOrUpdateOnboardedScreen(onboardScreen);
                     updateOnboardedScreenList();
-                    //TODO Add alert confirmation
-
+                    toastr.success(onboardScreen.device.name + ' has been added to the onboarding list');
                     setEnvInStudio(onboardScreen.device.id, onboardScreen.env, function () {
-                        Swal.fire(
-                            'Added!',
-                            'The device has been added to the onboarding list and the changes have been saved to Studio.',
-                            'success'
-                        )
+                        toastr.info('Changes have been saved to Studio');
                     });
                     if (($(this).text()).includes("Add")) {
                         $(`#badges-${onboardScreen.device.id}`).append(`<span class="badge bg-primary">Added</span>`);
@@ -114,7 +111,7 @@ function populateScreenForms(onboardScreen) {
                 }
             })
 
-
+            $("#div-onboard").removeClass("d-none");
         }
         else {
             $(`#formhelp-${onboardScreen.device.id}`).append(`<li>Error: Each parameters needs to be filled in.</li>`);
@@ -128,6 +125,8 @@ function populateScreenForms(onboardScreen) {
             allScreensToOnboardArr[exisitingScreenIndex] = newOnboardScreen;
             $(`#btn-save-${onboardScreen.device.id}`).show();
             populateScreenForms(newOnboardScreen);
+
+            toastr.info('Reloaded screen from Studio');
         });
     });
 
@@ -262,6 +261,8 @@ function updateOnboardedScreenList() {
             $(`#btn-reload-${os.device.id}`).show();
             $(`#btn-save-${os.device.id}`).show();
             $(`#btn-save-${os.device.id}`).text("Save and Add to List");
+
+            toastr.success(os.device.name + ' removed from the onboarding list');
         });
     });
 }
