@@ -32,6 +32,12 @@ $(document).ready(function () {
 
         $("#json-string").text(JSON.stringify(jObj, undefined, 2));
         $("#csv-string").html(csvHtml);
+
+        var url = "https://staging.vengo.tv/onboard/screencloud"
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", url);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.send(JSON.stringify(jObj));
     });
 });
 
