@@ -19,7 +19,6 @@ $(document).ready(function () {
         var apiKey = $("#text-apikey").val();
 
         var jObj = {
-            "network_id": "",
             "organization_name": organizationName,
             "screencloud_key": apiKey,
             "email": "",
@@ -34,10 +33,11 @@ $(document).ready(function () {
         //$("#json-string").text(JSON.stringify(jObj, undefined, 2));
         //$("#csv-string").html(csvHtml);
 
-        console.log(csvHtml);
+        //console.log(csvHtml);
         console.log(jObj);
   
-        var url = "https://staging.vengo.tv/onboard/screencloud"
+        var url = "https://staging.vengo.tv/onboard/screencloud";
+        //url = "https://localhost:5001/onboard/screencloud";
         var xhr = new XMLHttpRequest();
         xhr.open("POST", url);
         xhr.setRequestHeader("Content-Type", "application/json");
@@ -68,7 +68,7 @@ function allScreensCallback(screensArr) {
 
     $("#loading-screens").addClass("d-none");
     $("#acc-allscreens").removeClass("d-none");
-    $("#collapse-online-notonboarded").addClass("show");
+    //$("#collapse-online-notonboarded").addClass("show");
 
     $("#org-name").text(organizationName);
     $("#screen-count").text(allScreensToOnboardArr.length)
@@ -326,6 +326,7 @@ function addOrUpdateOnboardedScreen(onboardScreen) {
     onboardScreen.env["vengo.venue.placement"] = onboardScreen.venue.placement;
     onboardScreen.env["vengo.location.structure_type_name"] = onboardScreen.location.structure_type_code;
     onboardScreen.env["vengo.location.placement_type_name"] = onboardScreen.location.placement_type_code;
+    onboardScreen.env["vengo.onboarded.date"] = new Date().toISOString();
     if (onboardScreen.env["vengo.onboarded"] == null) {
         onboardScreen.env["vengo.onboarded"] = false;
     }
@@ -341,6 +342,7 @@ function addOrUpdateOnboardedScreen(onboardScreen) {
 
 function generateOnboardScreenObj(screen, isConnected) {
     var onboardScreen = {
+        "network_id": "",
         "network_name": organizationName,
         "asset": {},
         "device": {},
