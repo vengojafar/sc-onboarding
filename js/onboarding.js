@@ -43,6 +43,74 @@ $(document).ready(function () {
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.send(JSON.stringify(jObj));
     });
+
+    $(".accordion-button").click(function (){
+        var target = $(this).attr('data-bs-target');
+        var loaded = $(this).attr('data-loaded');
+
+        if (loaded == undefined)
+        {
+            Swal.fire({
+                title:'Loading...',
+                showConfirmButton:false,
+                didOpen: () => {
+                    Swal.showLoading()
+                }
+            })
+
+            if (target.includes("online-notonboarded")) {
+                setTimeout(() => {
+                    allScreensToOnboardArr.forEach(onboardScreen => {
+                        if (onboardScreen.is_connected && onboardScreen.env.ad_unit_id == null) {
+                            $("#list-online-notonboarded").append(addScreenToOnboardListItem(onboardScreen));
+                            populateScreenForms(onboardScreen);
+                        }
+                    });
+                    $(this).attr('data-loaded', true);
+                    Swal.close();
+                }, 500);
+                
+            }
+            else if (target.includes("online-onboarded"))
+            {
+                setTimeout(() => {
+                    allScreensToOnboardArr.forEach(onboardScreen => {
+                        if (onboardScreen.is_connected && onboardScreen.env.ad_unit_id != null) {
+                            $("#list-online-onboarded").append(addScreenToOnboardListItem(onboardScreen));
+                            populateScreenForms(onboardScreen);
+                        }
+                    });
+                    $(this).attr('data-loaded', true);
+                    Swal.close();
+                }, 500);
+            }
+            else if (target.includes("offline-onboarded")) {
+                setTimeout(() => {
+                    allScreensToOnboardArr.forEach(onboardScreen => {
+                        if (!onboardScreen.is_connected && onboardScreen.env.ad_unit_id != null) {
+                            $("#list-offline-onboarded").append(addScreenToOnboardListItem(onboardScreen));
+                            populateScreenForms(onboardScreen);
+                        }
+                    });
+                    $(this).attr('data-loaded', true);
+                    Swal.close();
+                }, 500);
+            }
+            else if (target.includes("offline")) {
+                setTimeout(() => {
+                    allScreensToOnboardArr.forEach(onboardScreen => {
+                        if (!onboardScreen.is_connected && onboardScreen.env.ad_unit_id == null) {
+                            $("#list-offline").append(addScreenToOnboardListItem(onboardScreen));
+                            populateScreenForms(onboardScreen);
+                        }
+                    });
+                    $(this).attr('data-loaded', true);
+                    Swal.close();
+                }, 500);
+            }
+        }
+        
+    });
 });
 
 function apiCheckCallback(isValid, orgName) {
@@ -64,14 +132,14 @@ function allScreensCallback(screensArr) {
         allScreensToOnboardArr.push(onboardScreen);
     });
 
+    $("#org-name").text(organizationName);
+    $("#screen-count").text(allScreensToOnboardArr.length)
+
     updateAllScreensList();
 
     $("#loading-screens").addClass("d-none");
     $("#acc-allscreens").removeClass("d-none");
     //$("#collapse-online-notonboarded").addClass("show");
-
-    $("#org-name").text(organizationName);
-    $("#screen-count").text(allScreensToOnboardArr.length)
 }
 
 function updateAllScreensList() {
@@ -80,28 +148,83 @@ function updateAllScreensList() {
     $("#list-online-onboarded").empty();
     $("#list-offline-onboarded").empty();
     $("#list-offline").empty();
-    
+
+    var onlineOnboardedCount = 0;
+    var onlineNotOnboardedCount = 0;
+    var offlineOnboardedCount = 0;
+    var offlineCount = 0;
+
     allScreensToOnboardArr.forEach(onboardScreen => {
-        //$("#list-allscreens").append(addScreenToOnboardListItem(onboardScreen));
         if (onboardScreen.is_connected){
             if (onboardScreen.env.ad_unit_id != null){
-                $("#list-online-onboarded").append(addScreenToOnboardListItem(onboardScreen));
+                onlineOnboardedCount++;
+                $("#online-onboarded-count").text(onlineOnboardedCount)
             }
             else {
-                $("#list-online-notonboarded").append(addScreenToOnboardListItem(onboardScreen));
+                onlineNotOnboardedCount++;
+                $("#online-notonboarded-count").text(onlineNotOnboardedCount)
             }
         }
         else {
             if (onboardScreen.env.ad_unit_id != null) {
-                $("#list-offline-onboarded").append(addScreenToOnboardListItem(onboardScreen));
+                offlineOnboardedCount++;
+                $("#offline-onboarded-count").text(offlineOnboardedCount)
+                
             }
             else {
-                $("#list-offline").append(addScreenToOnboardListItem(onboardScreen));
+                offlineCount++;
+                $("#offline-count").text(offlineCount)
             }
         }
-        populateScreenForms(onboardScreen);
-        console.log(`Loaded ${onboardScreen.device.id}`)
     });
+
+    /*allScreensToOnboardArr.forEach(onboardScreen => {
+        if (onboardScreen.is_connected && onboardScreen.env.ad_unit_id != null) {
+            $("#list-online-onboarded").append(addScreenToOnboardListItem(onboardScreen));
+            onlineOnboardedElements += addScreenToOnboardListItem(onboardScreen);
+            onlineOnboardedCount++;
+            $("#online-onboarded-count").text(onlineOnboardedCount)
+
+            populateScreenForms(onboardScreen);
+            console.log(`Loaded 1-${onboardScreen.device.id}`)
+        }
+    });*/
+
+    /*allScreensToOnboardArr.forEach(onboardScreen => {
+        if (onboardScreen.is_connected && onboardScreen.env.ad_unit_id == null) {
+            $("#list-online-notonboarded").append(addScreenToOnboardListItem(onboardScreen));
+            onlineNotOnboardedElements += addScreenToOnboardListItem(onboardScreen);
+            onlineNotOnboardedCount++;
+            $("#online-notonboarded-count").text(onlineNotOnboardedCount)
+
+            populateScreenForms(onboardScreen);
+            console.log(`Loaded 2-${onboardScreen.device.id}`)
+        }
+    });
+    
+    allScreensToOnboardArr.forEach(onboardScreen => {
+        if (!onboardScreen.is_connected && onboardScreen.env.ad_unit_id != null) {
+            $("#list-offline-onboarded").append(addScreenToOnboardListItem(onboardScreen));
+            offlineOnboardedElements += addScreenToOnboardListItem(onboardScreen);
+            offlineOnboardedCount++;
+            $("#offline-onboarded-count").text(offlineOnboardedCount)
+
+            populateScreenForms(onboardScreen);
+            console.log(`Loaded ${onboardScreen.device.id}`)
+        }
+    });
+
+    allScreensToOnboardArr.forEach(onboardScreen => {
+        if (!onboardScreen.is_connected && onboardScreen.env.ad_unit_id == null) {
+            $("#list-offline").append(addScreenToOnboardListItem(onboardScreen));
+            offlineElements += addScreenToOnboardListItem(onboardScreen);
+            offlineCount++;
+            $("#offline-count").text(offlineCount)
+
+            populateScreenForms(onboardScreen);
+            console.log(`Loaded ${onboardScreen.device.id}`)
+        }
+    });*/
 }
 
 function populateScreenForms(onboardScreen) {
@@ -377,7 +500,7 @@ function generateOnboardScreenObj(screen, isConnected) {
     if (screen.env.sc_address != undefined && screen.env.sc_address.endsWith("USA")) {
         address = screen.env.sc_address.replace(", USA", "");
         state = address.substring(address.lastIndexOf(", ") + 2);
-        address = address.substring(0, address.indexOf(","))
+        address = address.substring(0, address.substring(0, address.indexOf(", " + state)).lastIndexOf(","));
         //screen.env.sc_address = screen.env.sc_address.replace((", " + state), "");
     }
 
