@@ -457,6 +457,7 @@ function addOrUpdateOnboardedScreen(onboardScreen) {
     onboardScreen.device.name = generateFormattedDeviceName(onboardScreen.venue.name, onboardScreen.venue.id, onboardScreen.venue.placement, onboardScreen.network_name);
 
     onboardScreen.env["ad_unit_id"] = onboardScreen.device.id;
+    onboardScreen.env["vengo.network_name"] = onboardScreen.network_name;
     onboardScreen.env["vengo.device.name"] = onboardScreen.device.name;
     onboardScreen.env["vengo.asset.name"] = onboardScreen.asset.name;
     onboardScreen.env["vengo.asset.size"] = onboardScreen.asset.size;
@@ -467,6 +468,12 @@ function addOrUpdateOnboardedScreen(onboardScreen) {
     onboardScreen.env["vengo.venue.placement"] = onboardScreen.venue.placement;
     onboardScreen.env["vengo.location.structure_type_name"] = onboardScreen.location.structure_type_code;
     onboardScreen.env["vengo.location.placement_type_name"] = onboardScreen.location.placement_type_code;
+    onboardScreen.env["vengo.location.street_address"] = onboardScreen.location.street_address_1;
+    onboardScreen.env["vengo.location.city"] = onboardScreen.location.city;
+    onboardScreen.env["vengo.location.state"] = onboardScreen.location.state;
+    onboardScreen.env["vengo.location.country"] = onboardScreen.location.country;
+    onboardScreen.env["vengo.location.latitude"] = onboardScreen.location.latitude;
+    onboardScreen.env["vengo.location.longitude"] = onboardScreen.location.longitude;
     onboardScreen.env["vengo.onboarded.date"] = new Date().toISOString();
     if (onboardScreen.env["vengo.onboarded"] == null) {
         onboardScreen.env["vengo.onboarded"] = false;
