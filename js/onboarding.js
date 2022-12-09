@@ -941,7 +941,7 @@ function addScreenToOnboardListItem(onboardScreen) {
             </div>
             <div class="col-12">
                 <div class="form-floating">
-                    <textarea class="form-control" id="form-playlistname-${onboardScreen.device.id}" placeholder="" readonly>${onboardScreen.playlist_name}</textarea>
+                    <input type="text" class="form-control" id="form-playlistname-${onboardScreen.device.id}" value="${onboardScreen.playlist_name}" readonly>
                     <label for="form-playlistname-${onboardScreen.device.id}">Associated Playlist Name</label>
                 </div>
             </div>
