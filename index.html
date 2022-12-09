@@ -4,8 +4,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="build" content="22.12.08.1420" />
-    <title>Vengo App Onboarding</title>
+    <meta name="build" content="22.12.08.2330" />
+    <title>Vengo Onboarding Tool</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;500;600&amp;display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -26,11 +26,15 @@
             padding-left: 4px;
             cursor: pointer;
         }
+
+        .pac-container {
+            z-index: 100000 !important;
+        }
     </style>
 </head>
 
 <body class="bg-light">
-    <nav class="navbar navbar-dark bg-dark justify-content-between shadow mb-3 fixed-top">
+    <nav class="navbar navbar-dark bg-dark justify-content-between shadow mb-3 fixed-top d-flex">
         <button class="navbar-toggler ms-2" type="button" data-bs-toggle="offcanvas"
             data-bs-target="#offcanvasParameters" aria-controls="offcanvasParameters">
             <span class="navbar-toggler-icon"></span>
@@ -58,7 +62,7 @@
                 <h5>Device Category</h5>
                 <p class="p-2">
                     Category that best describes the type of device that is displaying ad content
-<!--                 <ul>
+                    <!--                 <ul>
                     <li>Billboard</li>
                     <li>Cinema</li>
                     <li>Display panel</li>
@@ -124,32 +128,108 @@
 
         <div class="card mb-4">
             <h6 class="card-header fw-bold">
-                ScreenCloud Access
+                Instructions
             </h6>
             <div class="card-body">
-                <p class="card-text">Grant Vengo access to your ScreenCloud account to pull the information needed to
-                    onboard your screens to the ad server.
-                </p>
-                <p>Instructions on how to generate an API key/token
-                    can be found <a href="https://screencloud.github.io/signage-next-graphql-docs/get-an-api-token"
-                        target="_blank">here</a>. When selecting permissions, check:
-                <ul>
-                    <li>App</li>
-                    <li>App Instance</li>
-                    <li>Media</li>
-                    <li>Playlist</li>
-                    <li>Screen</li>
-                </ul>
+                <div class="pb-2 fw-bold">
+                    Enable Vengo access
+                </div>
+                <div class="card-text ms-1 ps-3 border-start border-2">
+                    <p>Vengo needs access to your ScreenCloud account to pull
+                        the information
+                        required to
+                        onboard your screens to the ad server.</p>
+                    <p>
+                        Instructions on how to generate an API key/token
+                        can be found <a href="https://screencloud.github.io/signage-next-graphql-docs/get-an-api-token"
+                            target="_blank">here</a>. When selecting permissions, check:
+                    </p>
+                    <ul class="ms-2">
+                        <li>App</li>
+                        <li>App Instance</li>
+                        <li>Media</li>
+                        <li>Playlist</li>
+                        <li>Screen</li>
+                    </ul>
+                </div>
+
+                <div class="pb-2 fw-bold">
+                    Use default parameters
+                </div>
+                <div class="card-text ms-1 ps-3 border-start border-2">
+                    <p>
+                        If you are onboarding multiple screens of the same type, use the "Default Parameters" form to
+                        quickly copy the same parameters to multiple screens
+                    </p>
+
+                </div>
+
+                <div class="pb-2 fw-bold">
+                    Screens
+                </div>
+                <div class="card-text ms-1 ps-3 border-start border-2">
+                    <p>
+                        Expand each section to find a set of screens
+                    </p>
+                    <ul class="ms-2">
+                        <li><b>Online, Not Onboarded</b> - screens that are eligible to be onboarded to Vengo's
+                            adserver</li>
+                        <li><b>Online, Onboarded</b> - screens that are already onboarded to Vengo's adserver
+                        </li>
+                        <li><b>Offline, Not Onboarded</b> - screens that are already onboarded to Vengo's
+                            adserver but
+                            are currently offline</li>
+                        <li><b>Offline</b> - screens that are currently offline</li>
+                    </ul>
+                    <p>
+                        Click the <b>Edit</b> button next to the Studio name to modify each parameter and add the screen
+                        to
+                        the onboard list
+                    </p>
+                    <p>
+                        Click the pin next to the address to modify the address
+                    </p>
+                    <p>
+                        Click <b>Copy from Default</b> to pull down the selections from the Default Parameters form
+                    </p>
+                    <p>
+                        Click <b>Reload from Studio</b> if you've made a change in ScreenCloud studio and need to
+                        refresh the data
+                    </p>
+                    <p>
+                        Click <b>Save and Add to List</b> when all selections are made and the screen is ready for
+                        onboarding
+                    </p>
+                </div>
+
+                <div class="pb-2 fw-bold">
+                    Submit screens to onboard
+                </div>
+                <div class="card-text ms-1 ps-3 border-start border-2">
+                    <p>
+                        After generating the list of screens to onboard, click Submit to transfer the data to Vengo
+                    </p>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <h6 class="card-header fw-bold">
+                ScreenCloud API Key
+            </h6>
+            <div class="card-body">
+                <p class="card-text">Enter your ScreenCloud API key and email address
                 </p>
                 <div class="form">
                     <div class="form-floating m-1">
-                        <textarea class="form-control" id="text-apikey"
-                            style="height: 100px"></textarea>
+                        <textarea class="form-control" id="text-apikey" style="height: 100px">
+                        </textarea>
                         <label for="text-apikey">API Key</label>
                     </div>
                     <form class="form-floating m-1">
                         <input type="email" class="form-control" id="form-contact-email" placeholder="" value="">
-                        <label for="form-contact-email">Contact's Email Address</label>
+                        <label for="form-contact-email">Email Address</label>
                     </form>
                     <button id="btn-submit-apikey" type="submit" class="btn btn-primary m-1">Submit</button>
                     <span id="icon-success" class="text-success d-none" style="vertical-align: middle;"><i
@@ -162,25 +242,13 @@
 
         <div id="card-parameters" class="card mb-4">
             <h6 class="card-header fw-bold">
-                Parameters
+                Default Parameters
             </h6>
             <div class="card-body">
-                <div class="card-text">
-                    <ul>
-                        <li>
-                            Click on the menu icon in the header to access definitions for each parameter
-                        </li>
-                        <li>
-                            Use the "Default Parameters" form to quickly copy the same parameters to multiple screens
-                        </li>
-                    </ul>
-                </div>
+                <p>Definitions for each parameter can be found by clicking the menu icon in the header</p>
                 <div class="card-text border-2 border-top">
                     <div class="container pt-2">
-                        <div class="py-2 fw-bold">
-                            Default Parameters
-                        </div>
-                        <div class="row g-2">
+                        <div class="row g-2 py-2">
                             <div class="col-md-3 col-12">
                                 <div class="form-floating">
                                     <select class="form-select" id="form-assetcategory-default">
@@ -415,26 +483,7 @@
                 <span id="org-name"></span> Screens (<span id="screen-count">0</span>)
             </h6>
             <div class="card-body">
-                <div class="card-text  border-2 border-bottom">
-                    <ul>
-                        <li>
-                            Expand each section to find a set of screens
-                            <ul>
-                                <li><b>Online, Not Onboarded</b> - screens that are eligible to be onboarded to Vengo's
-                                    adserver</li>
-                                <li><b>Online, Onboarded</b> - screens that are already onboarded to Vengo's adserver</li>
-                                <li><b>Offline, Not Onboarded</b> - screens that are already onboarded to Vengo's adserver but
-                                    are currently offline</li>
-                                <li><b>Offline</b> - screens that are currently offline</li>
-                            </ul>
-                        </li>
-                        <li>
-                            Click the Edit button next to the Studio name to modify each parameter and add the screen to
-                            the onboard list
-                        </li>
-                    </ul>
 
-                </div>
                 <div id="loading-screens" class="d-none pt-2">
                     <div class="d-flex justify-content-center">
                         <div class="spinner-border" role="status">
@@ -443,7 +492,7 @@
                     </div>
                 </div>
 
-                <div id="acc-allscreens" class="accordion pt-4 d-none">
+                <div id="acc-allscreens" class="accordion pt-1 d-none">
                     <div class="accordion-item">
                         <h2 class="accordion-header">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -529,8 +578,31 @@
         </pre>
     </div>
 
+    <!-- Modal -->
+    <div class="modal fade" id="modal-address" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fs-5" id="staticBackdropLabel">Screen Location</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Start typing an address and select result from the autocomplete dropdown</p>
+                    <input type="text" id="autocomplete" placeholder="Enter address" style="width: 100%">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button id="btn-modal-save" type="button" class="btn btn-primary"
+                        data-bs-dismiss="modal">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
+    <script async
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAwfRhxGCy-9xqM7_gXWnbUIaYV3A3e6Z8&libraries=places&callback=initMap">
+        </script>
     <script src=" https://code.jquery.com/jquery-3.6.0.min.js"
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous">
         </script>
@@ -541,6 +613,52 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script src="js/sc_graphql.js"></script>
     <script src="js/onboarding.js"></script>
+
+    <script>
+        const addressInput = document.getElementById("autocomplete");
+        const addressModal = document.getElementById("modal-address");
+
+        var screen = null;
+        var placeObj = {};
+
+        addressModal.addEventListener('show.bs.modal', event => {
+            const button = event.relatedTarget;
+            const id = button.getAttribute("data-bs-id");
+            screen = getScreenObjectFromId(id);
+            if (screen != null) {
+                addressInput.value = `${screen.location.street_address_1}, ${screen.location.city}, ${screen.location.state}`;
+            }
+        });
+
+        document.getElementById("btn-modal-save").addEventListener('click', function () {
+            if (screen != null) {
+                saveAddressInStudio(screen, placeObj);
+                placeObj = {};
+            }
+        });
+
+        function initMap() {
+            const options = {
+                componentRestrictions: { country: "us" },
+                fields: ["address_components", "geometry"],
+                strictBounds: false,
+                types: [],
+            };
+
+            const autocomplete = new google.maps.places.Autocomplete(addressInput, options);
+            autocomplete.addListener('place_changed', function () {
+                var place = autocomplete.getPlace();
+                if (!place.geometry) {
+                    addressInput.placeholder = "Enter address";
+                }
+                else {
+                    placeObj.address = place.address_components;
+                    placeObj.latitude = place.geometry.location.lat();
+                    placeObj.longitude = place.geometry.location.lng();
+                }
+            });
+        }
+    </script>
 
 </body>
 

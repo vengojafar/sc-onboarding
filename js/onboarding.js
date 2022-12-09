@@ -277,15 +277,7 @@ function populateScreenForms(onboardScreen) {
     });
 
     $(`#btn-reload-${onboardScreen.device.id}`).click(function () {
-        getScreenById(onboardScreen.device.id, function (screen) {
-            var newOnboardScreen = generateOnboardScreenObj(screen, screen.isConnected);
-            var exisitingScreenIndex = allScreensToOnboardArr.findIndex(s => s.device.id === newOnboardScreen.device.id);
-            allScreensToOnboardArr[exisitingScreenIndex] = newOnboardScreen;
-            $(`#btn-save-${onboardScreen.device.id}`).show();
-            populateScreenForms(newOnboardScreen);
-
-            toastr.info('Reloaded screen from Studio');
-        });
+        reloadFromStudio(onboardScreen.device.id);
     });
 
     $(`#btn-copy-${onboardScreen.device.id}`).click(function () {
@@ -471,6 +463,7 @@ function addOrUpdateOnboardedScreen(onboardScreen) {
     onboardScreen.env["vengo.location.street_address"] = onboardScreen.location.street_address_1;
     onboardScreen.env["vengo.location.city"] = onboardScreen.location.city;
     onboardScreen.env["vengo.location.state"] = onboardScreen.location.state;
+    onboardScreen.env["vengo.location.postal_code"] = onboardScreen.location.postal_code;
     onboardScreen.env["vengo.location.country"] = onboardScreen.location.country;
     onboardScreen.env["vengo.location.latitude"] = onboardScreen.location.latitude;
     onboardScreen.env["vengo.location.longitude"] = onboardScreen.location.longitude;
@@ -486,6 +479,59 @@ function addOrUpdateOnboardedScreen(onboardScreen) {
     else {
         onboardedScreensArr.push(onboardScreen);
     }
+}
+
+function getScreenObjectFromId(screenId){
+    var existingIndex = allScreensToOnboardArr.findIndex(s => s.device.id === screenId);
+    if (existingIndex > -1)
+    {
+        return allScreensToOnboardArr[existingIndex];
+    }
+
+    return null;
+}
+
+function reloadFromStudio(id){
+    getScreenById(id, function (screen) {
+        var newOnboardScreen = generateOnboardScreenObj(screen, screen.isConnected);
+        var exisitingScreenIndex = allScreensToOnboardArr.findIndex(s => s.device.id === newOnboardScreen.device.id);
+        allScreensToOnboardArr[exisitingScreenIndex] = newOnboardScreen;
+        $(`#btn-save-${id}`).show();
+        populateScreenForms(newOnboardScreen);
+
+        toastr.info('Reloaded screen from Studio');
+    });
+}
+
+function saveAddressInStudio(onboardScreen, placeObj){
+    onboardScreen.env["vengo.location.latitude"] = placeObj.latitude;
+    onboardScreen.env["vengo.location.longitude"] = placeObj.longitude;
+
+    placeObj.address.forEach(component => {
+        let { long_name, types } = component
+
+        if (types.includes('street_number')) {
+            onboardScreen.env["vengo.location.street_address"] = long_name + " "
+        } else if (types.includes('route')) {
+            onboardScreen.env["vengo.location.street_address"] += long_name
+        } else if (types.includes('locality')) {
+            onboardScreen.env["vengo.location.city"] = long_name
+        } else if (types.includes('administrative_area_level_1')) {
+            onboardScreen.env["vengo.location.state"] = long_name
+        } else if (types.includes('country')) {
+            onboardScreen.env["vengo.location.country"] = long_name
+        } else if (types.includes('postal_code')) {
+            onboardScreen.env["vengo.location.postal_code"] = long_name
+        }
+    });
+
+    setEnvInStudio(onboardScreen.device.id, onboardScreen.env, function () {
+        toastr.info('Changes have been saved to Studio');
+        setTimeout(() => {
+            reloadFromStudio(onboardScreen.device.id);
+        }, 500);
+        
+    });
 }
 
 function generateFormattedDeviceName(venueName, venueId, venuePlacement, networkName)
@@ -554,6 +600,17 @@ function generateOnboardScreenObj(screen, isConnected) {
     onboardScreen.location.longitude = screen.env.sc_longitude === undefined ? "" : screen.env.sc_longitude;
     onboardScreen.location.structure_type_code = screen.env["vengo.location.structure_type_name"] != null ? screen.env["vengo.location.structure_type_name"] : "";
     onboardScreen.location.placement_type_code = screen.env["vengo.location.placement_type_name"] != null ? screen.env["vengo.location.placement_type_name"] : "";
+
+    if (screen.env["vengo.location.street_address"] != null) {
+        onboardScreen.location.street_address_1 = screen.env["vengo.location.street_address"]
+        onboardScreen.location.street_address_2 = "";
+        onboardScreen.location.city = screen.env["vengo.location.city"]
+        onboardScreen.location.state = screen.env["vengo.location.state"]
+        onboardScreen.location.postal_code = screen.env["vengo.location.postal_code"]
+        onboardScreen.location.country = screen.env["vengo.location.country"]
+        onboardScreen.location.latitude = screen.env["vengo.location.latitude"]
+        onboardScreen.location.longitude = screen.env["vengo.location.longitude"]
+    }
 
     onboardScreen.slot.height = screen.playerHeight;
     onboardScreen.slot.width = screen.playerWidth;
@@ -874,9 +931,12 @@ function addScreenToOnboardListItem(onboardScreen) {
                 </div>
             </div>
             <div class="col-12">
-                <div class="form-floating">
-                    <textarea class="form-control" id="form-locationaddress-${onboardScreen.device.id}" placeholder="" readonly>${onboardScreen.location.street_address_1}</textarea>
-                    <label for="form-locationaddress-${onboardScreen.device.id}">Location Address</label>
+                <div class="input-group">
+                    <form class="form-floating">
+                        <textarea class="form-control border-end-0" id="form-locationaddress-${onboardScreen.device.id}" placeholder="" readonly>${onboardScreen.location.street_address_1}</textarea>
+                        <label for="form-locationaddress-${onboardScreen.device.id}">Location Address</label>
+                    </form>
+                    <button class="btn btn-outline-primary border border-start-0 text-decoration-none" style="border-color: #ced4da!important;" data-bs-toggle="modal" data-bs-target="#modal-address" data-bs-id="${onboardScreen.device.id}"><i class="bi bi-pin-map-fill"></i></button>
                 </div>
             </div>
             <div class="col-12">
