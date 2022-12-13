@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="build" content="22.12.08.2330" />
+    <meta name="build" content="22.12.13.1740" />
     <title>Vengo Onboarding Tool</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;500;600&amp;display=swap" rel="stylesheet">
@@ -39,7 +39,7 @@
             data-bs-target="#offcanvasParameters" aria-controls="offcanvasParameters">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <a class="navbar-brand" href="#">
+        <a class="navbar-brand" href="">
             <img src="assets/vengo_logo.png" style="width: 50px;" />
         </a>
         <span></span>
@@ -127,10 +127,12 @@
         </div>
 
         <div class="card mb-4">
-            <h6 class="card-header fw-bold">
+            <h6 class="card-header fw-bold d-flex justify-content-between align-items-center">
                 Instructions
+                <button class="btn btn-link btn-sm text-black" data-bs-toggle="collapse"
+                    data-bs-target="#collapse-instructions"><i class="bi bi-arrows-collapse"></i></button>
             </h6>
-            <div class="card-body">
+            <div id="collapse-instructions" class="card-body collapse show">
                 <div class="pb-2 fw-bold">
                     Enable Vengo access
                 </div>
@@ -215,10 +217,12 @@
         </div>
 
         <div class="card mb-4">
-            <h6 class="card-header fw-bold">
+            <h6 class="card-header fw-bold d-flex justify-content-between align-items-center">
                 ScreenCloud API Key
+                <button class="btn btn-link btn-sm text-black" data-bs-toggle="collapse"
+                    data-bs-target="#collapse-apikey"><i class="bi bi-arrows-collapse"></i></button>
             </h6>
-            <div class="card-body">
+            <div id="collapse-apikey" class="card-body collapse show">
                 <p class="card-text">Enter your ScreenCloud API key and email address
                 </p>
                 <div class="form">
@@ -240,10 +244,12 @@
         </div>
 
         <div id="card-parameters" class="card mb-4">
-            <h6 class="card-header fw-bold">
+            <h6 class="card-header fw-bold d-flex justify-content-between align-items-center">
                 Default Parameters
+                <button class="btn btn-link btn-sm text-black" data-bs-toggle="collapse"
+                    data-bs-target="#collapse-parameters"><i class="bi bi-arrows-collapse"></i></button>
             </h6>
-            <div class="card-body">
+            <div id="collapse-parameters" class="card-body collapse show">
                 <p>Definitions for each parameter can be found by clicking the menu icon in the header</p>
                 <div class="card-text border-2 border-top">
                     <div class="container pt-2">
@@ -478,10 +484,12 @@
         </div>
 
         <div id="card-allscreens" class="card mb-4">
-            <h6 class="card-header fw-bold">
-                <span id="org-name"></span> Screens (<span id="screen-count">0</span>)
+            <h6 class="card-header fw-bold d-flex justify-content-between align-items-center">
+                <div><span id="org-name"></span> Screens (<span id="screen-count">0</span>)</div>
+                <button class="btn btn-link btn-sm text-black" data-bs-toggle="collapse"
+                    data-bs-target="#collapse-screens"><i class="bi bi-arrows-collapse"></i></button>
             </h6>
-            <div class="card-body">
+            <div id="collapse-screens" class="card-body collapse show">
 
                 <div id="loading-screens" class="d-none pt-2">
                     <div class="d-flex justify-content-center">
@@ -556,25 +564,23 @@
         </div>
 
         <div id="div-onboard" class="card mb-4 d-none">
-            <h6 class="card-header fw-bold">
-                Screens to Onboard (<span id="onboard-count">0</span>)
+            <h6 class="card-header fw-bold d-flex justify-content-between align-items-center">
+                <div>Screens to Onboard (<span id="onboard-count">0</span>)</div>
+                <div><button id="btn-import-screens" class="btn btn-sm btn-outline-dark disabled">Import</button></div>
             </h6>
             <div class="card-body">
-                <ul id="list-onboardscreens" class="list-group list-group-flush">
+                <ul id="list-onboardscreens" class="list-group list-group-flush pb-3">
                 </ul>
-                <p class="card-text text-end pt-3">
+                <div class="card-text d-flex justify-content-between pt-3 border-2 border-top">
+                    <button id="btn-export-screens" class="btn btn-outline-dark">Export</button>
                     <button id="btn-submit-screens" class="btn btn-primary">Submit</button>
-                </p>
+                </div>
             </div>
         </div>
-
-        <pre id="json-string">
-
-        </pre>
-
-        <pre id="csv-string">
-
-        </pre>
+        <div class="d-none">
+            <pre id="json-string"></pre>
+            <pre id="csv-string"></pre>
+        </div>
     </div>
 
     <!-- Modal -->
@@ -598,10 +604,10 @@
         </div>
     </div>
 
+    <footer class="footer mt-auto py-3 text-muted text-center">
+        <small>&copy; 2022, Vengo, Inc. Build <span id="span-build"></span></small>
+    </footer>
 
-    <script async
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAwfRhxGCy-9xqM7_gXWnbUIaYV3A3e6Z8&libraries=places&callback=initMap">
-        </script>
     <script src=" https://code.jquery.com/jquery-3.6.0.min.js"
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous">
         </script>
@@ -610,10 +616,13 @@
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script src="js/FileSaver.min.js"></script>
     <script src="js/sc_graphql.js"></script>
     <script src="js/onboarding.js"></script>
 
     <script>
+        $("#span-build").html($("meta[name='build']").attr("content"));
+
         const addressInput = document.getElementById("autocomplete");
         const addressModal = document.getElementById("modal-address");
 
@@ -658,6 +667,9 @@
             });
         }
     </script>
+    <script async
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAwfRhxGCy-9xqM7_gXWnbUIaYV3A3e6Z8&libraries=places&callback=initMap">
+        </script>
 
 </body>
 

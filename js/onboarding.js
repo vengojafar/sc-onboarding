@@ -16,33 +16,74 @@ $(document).ready(function () {
         }
     });
 
+    $("#btn-export-screens").click(function () {
+        if (onboardedScreensArr.length > 0) {
+            var apiKey = $("#text-apikey").val();
+
+            var jObj = {
+                "organization_name": organizationName,
+                "screencloud_key": apiKey,
+                "email": "",
+                "screens": onboardedScreensArr
+            };
+
+            var fileName = `vengo_export-${Date.now()}.json`;
+            var fileToSave = new Blob([JSON.stringify(jObj, undefined, 2)], {
+                type: 'application/json'
+            });
+            console.log(fileName);
+            saveAs(fileToSave, fileName);
+        }
+    });
+
     $("#btn-submit-screens").click(function () {
-        var apiKey = $("#text-apikey").val();
+        if (onboardedScreensArr.length > 0){
+            Swal.fire({
+                title: 'Submit List?',
+                text: "List of screens will be sent to Vengo for review",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Save'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var apiKey = $("#text-apikey").val();
 
-        var jObj = {
-            "organization_name": organizationName,
-            "screencloud_key": apiKey,
-            "email": "",
-            "screens": onboardedScreensArr
-        };
+                    var jObj = {
+                        "organization_name": organizationName,
+                        "screencloud_key": apiKey,
+                        "email": "",
+                        "screens": onboardedScreensArr
+                    };
 
-        var csvHtml = "";
-        onboardedScreensArr.forEach(onboardScreen => {
-            csvHtml += `${onboardScreen.network_name};${onboardScreen.venue.id};${onboardScreen.venue.name};${onboardScreen.venue.category_code};${onboardScreen.asset.name};${onboardScreen.asset.category};${onboardScreen.asset.size};${onboardScreen.asset.aspect_ratio};"video/mp4";${onboardScreen.device.id};${onboardScreen.device.name};${onboardScreen.device.description};${onboardScreen.location.street_address_1};${onboardScreen.location.street_address_2};${onboardScreen.location.city};${onboardScreen.location.state};${onboardScreen.location.postal_code};${onboardScreen.location.country};${onboardScreen.location.latitude};${onboardScreen.location.longitude};${onboardScreen.location.structure_type_code};${onboardScreen.location.placement_type_code};;;${onboardScreen.slot.height};${onboardScreen.slot.width};${onboardScreen.slot.top_left_x};${onboardScreen.slot.top_left_y};${onboardScreen.slot.duration};${onboardScreen.slot.share_of_voice};${onboardScreen.restrictions.creative_categories};${onboardScreen.restrictions.other};${onboardScreen.operating_hours.always_open} <br>`;
-        });
+                    var csvHtml = "";
+                    onboardedScreensArr.forEach(onboardScreen => {
+                        csvHtml += `${onboardScreen.network_name};${onboardScreen.venue.id};${onboardScreen.venue.name};${onboardScreen.venue.category_code};${onboardScreen.asset.name};${onboardScreen.asset.category};${onboardScreen.asset.size};${onboardScreen.asset.aspect_ratio};"video/mp4";${onboardScreen.device.id};${onboardScreen.device.name};${onboardScreen.device.description};${onboardScreen.location.street_address_1};${onboardScreen.location.street_address_2};${onboardScreen.location.city};${onboardScreen.location.state};${onboardScreen.location.postal_code};${onboardScreen.location.country};${onboardScreen.location.latitude};${onboardScreen.location.longitude};${onboardScreen.location.structure_type_code};${onboardScreen.location.placement_type_code};;;${onboardScreen.slot.height};${onboardScreen.slot.width};${onboardScreen.slot.top_left_x};${onboardScreen.slot.top_left_y};${onboardScreen.slot.duration};${onboardScreen.slot.share_of_voice};${onboardScreen.restrictions.creative_categories};${onboardScreen.restrictions.other};${onboardScreen.operating_hours.always_open} <br>`;
+                    });
 
-        //$("#json-string").text(JSON.stringify(jObj, undefined, 2));
-        //$("#csv-string").html(csvHtml);
+                    //$("#json-string").text(JSON.stringify(jObj, undefined, 2));
+                    //$("#csv-string").html(csvHtml);
 
-        //console.log(csvHtml);
-        console.log(jObj);
-  
-        var url = "https://staging.vengo.tv/onboard/screencloud";
-        //url = "https://localhost:5001/onboard/screencloud";
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", url);
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.send(JSON.stringify(jObj));
+                    //console.log(csvHtml);
+                    console.log(jObj);
+
+                    var url = "https://staging.vengo.tv/onboard/screencloud";
+                    //url = "https://localhost:5001/onboard/screencloud";
+                    var xhr = new XMLHttpRequest();
+                    xhr.addEventListener("readystatechange", function () {
+                        if (this.readyState === 4 && this.status === 200) {
+                            toastr.success('List successfully sent to Vengo');
+                            $("#btn-submit-screens").hide();
+                        }
+                    });
+                    xhr.open("POST", url);
+                    xhr.setRequestHeader("Content-Type", "application/json");
+                    xhr.send(JSON.stringify(jObj));
+                }
+            })
+        }
+        
     });
 
     $(".accordion-button").click(function (){
@@ -120,6 +161,9 @@ function apiCheckCallback(isValid, orgName) {
         $("#loading-screens").removeClass("d-none");
         organizationName = orgName;
         getAllScreens(allScreensCallback);
+        setTimeout(() => {
+            new bootstrap.Collapse('#collapse-apikey', {hide: true})
+        }, 1000);
     }
     else {
         $("#icon-error").removeClass("d-none");
@@ -141,6 +185,7 @@ function allScreensCallback(screensArr) {
     $("#loading-screens").addClass("d-none");
     $("#acc-allscreens").removeClass("d-none");
     //$("#collapse-online-notonboarded").addClass("show");
+    $("#div-onboard").removeClass("d-none");
 }
 
 function updateAllScreensList() {
@@ -178,54 +223,6 @@ function updateAllScreensList() {
             }
         }
     });
-
-    /*allScreensToOnboardArr.forEach(onboardScreen => {
-        if (onboardScreen.is_connected && onboardScreen.env.ad_unit_id != null) {
-            $("#list-online-onboarded").append(addScreenToOnboardListItem(onboardScreen));
-            onlineOnboardedElements += addScreenToOnboardListItem(onboardScreen);
-            onlineOnboardedCount++;
-            $("#online-onboarded-count").text(onlineOnboardedCount)
-
-            populateScreenForms(onboardScreen);
-            console.log(`Loaded 1-${onboardScreen.device.id}`)
-        }
-    });*/
-
-    /*allScreensToOnboardArr.forEach(onboardScreen => {
-        if (onboardScreen.is_connected && onboardScreen.env.ad_unit_id == null) {
-            $("#list-online-notonboarded").append(addScreenToOnboardListItem(onboardScreen));
-            onlineNotOnboardedElements += addScreenToOnboardListItem(onboardScreen);
-            onlineNotOnboardedCount++;
-            $("#online-notonboarded-count").text(onlineNotOnboardedCount)
-
-            populateScreenForms(onboardScreen);
-            console.log(`Loaded 2-${onboardScreen.device.id}`)
-        }
-    });
-    
-    allScreensToOnboardArr.forEach(onboardScreen => {
-        if (!onboardScreen.is_connected && onboardScreen.env.ad_unit_id != null) {
-            $("#list-offline-onboarded").append(addScreenToOnboardListItem(onboardScreen));
-            offlineOnboardedElements += addScreenToOnboardListItem(onboardScreen);
-            offlineOnboardedCount++;
-            $("#offline-onboarded-count").text(offlineOnboardedCount)
-
-            populateScreenForms(onboardScreen);
-            console.log(`Loaded ${onboardScreen.device.id}`)
-        }
-    });
-
-    allScreensToOnboardArr.forEach(onboardScreen => {
-        if (!onboardScreen.is_connected && onboardScreen.env.ad_unit_id == null) {
-            $("#list-offline").append(addScreenToOnboardListItem(onboardScreen));
-            offlineElements += addScreenToOnboardListItem(onboardScreen);
-            offlineCount++;
-            $("#offline-count").text(offlineCount)
-
-            populateScreenForms(onboardScreen);
-            console.log(`Loaded ${onboardScreen.device.id}`)
-        }
-    });*/
 }
 
 function populateScreenForms(onboardScreen) {
@@ -243,8 +240,8 @@ function populateScreenForms(onboardScreen) {
 
         if (inputtedParametersAreValid(onboardScreen.device.id)) {
             Swal.fire({
-                title: 'Are you sure?',
-                text: "This will save the changes to Studio",
+                title: 'Save and Add to List?',
+                text: "Changes will be saved to Studio and added to onboard list",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -268,8 +265,6 @@ function populateScreenForms(onboardScreen) {
                     $(`#btn-reload-${onboardScreen.device.id}`).hide();
                 }
             })
-
-            $("#div-onboard").removeClass("d-none");
         }
         else {
             $(`#formhelp-${onboardScreen.device.id}`).append(`<li>Error: Each parameters needs to be filled in.</li>`);
