@@ -14,6 +14,13 @@ $(document).ready(function () {
             $("#icon-error").addClass("d-none");
             checkApiKeyAndGetOrgName(apiKey, apiCheckCallback);
         }
+        else{
+            Swal.fire({
+                icon: 'error',
+                title: 'Invalid API Key',
+                text: 'The API key entered is in an invalid format.',
+            })
+        }
     });
 
     $("#btn-export-screens").click(function () {

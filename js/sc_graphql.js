@@ -26,7 +26,7 @@ function checkApiKeyAndGetOrgName(apiKey, apiCheckCallback) {
         if (this.readyState === 4) {
             if (this.status === 200) {
                 var qr = JSON.parse(this.responseText);
-                if (qr.data.currentOrg.id != null) {       
+                if (qr.data.currentOrg != null && qr.data.currentOrg.id != null) {       
                     validApiKey = apiKey;
                     apiCheckCallback(true, qr.data.currentOrg.name);
                 }
