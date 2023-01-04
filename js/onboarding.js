@@ -506,6 +506,27 @@ function reloadFromStudio(id){
 }
 
 function saveAddressInStudio(onboardScreen, placeObj){
+    var id = onboardScreen.device.id;
+    onboardScreen.asset.name = $("#form-assetname-" + id).val();
+    onboardScreen.asset.size = $("#form-assetsize-" + id).val();
+    onboardScreen.venue.id = $("#form-venueid-" + id).val();
+    onboardScreen.venue.name = $("#form-venuename-" + id).val();
+    onboardScreen.venue.placement = $("#form-venueplacement-" + id).val();
+    onboardScreen.asset.category = $("#form-assetcategory-" + id).val();
+    onboardScreen.venue.category_code = $("#form-venuecategory-" + id).val();
+    onboardScreen.location.structure_type_code = $("#form-structurecategory-" + id).val();
+    onboardScreen.location.placement_type_code = $("#form-placementcategory-" + id).val();
+
+    onboardScreen.env["vengo.asset.name"] = onboardScreen.asset.name;
+    onboardScreen.env["vengo.asset.size"] = onboardScreen.asset.size;
+    onboardScreen.env["vengo.asset.category"] = onboardScreen.asset.category;
+    onboardScreen.env["vengo.venue.category_name"] = onboardScreen.venue.category_code;
+    onboardScreen.env["vengo.venue.id"] = onboardScreen.venue.id;
+    onboardScreen.env["vengo.venue.name"] = onboardScreen.venue.name;
+    onboardScreen.env["vengo.venue.placement"] = onboardScreen.venue.placement;
+    onboardScreen.env["vengo.location.structure_type_name"] = onboardScreen.location.structure_type_code;
+    onboardScreen.env["vengo.location.placement_type_name"] = onboardScreen.location.placement_type_code;
+
     onboardScreen.env["vengo.location.latitude"] = placeObj.latitude;
     onboardScreen.env["vengo.location.longitude"] = placeObj.longitude;
 
@@ -938,7 +959,7 @@ function addScreenToOnboardListItem(onboardScreen) {
                         <textarea class="form-control border-end-0" id="form-locationaddress-${onboardScreen.device.id}" placeholder="" readonly>${onboardScreen.location.street_address_1}</textarea>
                         <label for="form-locationaddress-${onboardScreen.device.id}">Location Address</label>
                     </form>
-                    <button class="btn btn-outline-primary border border-start-0 text-decoration-none" style="border-color: #ced4da!important;" data-bs-toggle="modal" data-bs-target="#modal-address" data-bs-id="${onboardScreen.device.id}"><i class="bi bi-pin-map-fill"></i></button>
+                    <button class="btn btn-outline-primary border border-start-0 text-decoration-none" style="border-color: #ced4da!important;" data-bs-toggle="modal" data-bs-target="#modal-address" data-bs-id="${onboardScreen.device.id}"><i class="bi bi-pin-map-fill"></i> Edit</button>
                 </div>
             </div>
             <div class="col-12">
