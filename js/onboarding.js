@@ -47,8 +47,8 @@ $(document).ready(function () {
         if (onboardedScreensArr.length > 0){
             Swal.fire({
                 title: 'Submit List?',
-                text: "List of screens will be sent to Vengo for review",
-                icon: 'warning',
+                text: "List of screens will be sent to Vengo for onboarding",
+                icon: 'question',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
@@ -248,12 +248,12 @@ function populateScreenForms(onboardScreen) {
         if (inputtedParametersAreValid(onboardScreen.device.id)) {
             Swal.fire({
                 title: 'Save and Add to List?',
-                text: "Changes will be saved to Studio and added to onboard list",
-                icon: 'warning',
+                text: onboardScreen.device.name + " will be onboarded as " + generateFormattedDeviceName($("#form-venuename-" + onboardScreen.device.id).val(), $("#form-venueid-" + onboardScreen.device.id).val(), $("#form-venueplacement-" + onboardScreen.device.id).val(), onboardScreen.network_name),
+                icon: 'question',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Save'
+                confirmButtonText: 'Continue'
             }).then((result) => {
                 if (result.isConfirmed) {
                     addOrUpdateOnboardedScreen(onboardScreen);
@@ -274,7 +274,7 @@ function populateScreenForms(onboardScreen) {
             })
         }
         else {
-            $(`#formhelp-${onboardScreen.device.id}`).append(`<li>Error: Each parameters needs to be filled in.</li>`);
+            $(`#formhelp-${onboardScreen.device.id}`).append(`<li>Error: Each parameter needs to be filled in.</li>`);
         }
     });
 
@@ -296,17 +296,18 @@ function populateScreenForms(onboardScreen) {
     $(`#formhelp-${onboardScreen.device.id}`).empty();
     $(`#badges-${onboardScreen.device.id}`).empty();
 
-    $(`#badges-${onboardScreen.device.id}`).append(`${(onboardScreen.is_connected ? '<span class="badge bg-success">Online' : '<span class="badge bg-danger">Offline') + '</span> '}`);
-    $(`#badges-${onboardScreen.device.id}`).append(`${(onboardScreen.location.street_address_1 == "" ? '<span class="badge bg-danger">Address Missing</span> ' : "")}`);
-    $(`#badges-${onboardScreen.device.id}`).append(`${(onboardScreen.env.ad_unit_id != null ? '<span class="badge bg-success">Enabled</span> ' : "")}`);
-    $(`#badges-${onboardScreen.device.id}`).append(`${((onboardScreen.env["vengo.onboarded"] != null && onboardScreen.env["vengo.onboarded"] != false) ? '<span class="badge bg-warning">Onboarded</span> ' : "")}`);
+    $(`#badges-${onboardScreen.device.id}`).append(`${(onboardScreen.is_connected ? '<span class="badge bg-success">Online' : '<span class="badge bg-secondary">Offline') + '</span> '}`);
+    $(`#badges-${onboardScreen.device.id}`).append(`${(onboardScreen.location.postal_code == "" ? '<span class="badge bg-danger">Address Incomplete</span> ' : "")}`);
+    $(`#badges-${onboardScreen.device.id}`).append(`${(onboardScreen.env.ad_unit_id != null ? '<span class="badge bg-warning">Onboarded</span> ' : "")}`);
+    $(`#badges-${onboardScreen.device.id}`).append(`${((onboardScreen.env["vengo.onboarded"] != null && onboardScreen.env["vengo.onboarded"] != false) ? '<span class="badge bg-success">Ads Enabled</span> ' : "")}`);
 
     $(`#form-devicename-${onboardScreen.device.id}`).val(onboardScreen.device.name);
-    $(`#form-locationaddress-${onboardScreen.device.id}`).val(`${onboardScreen.location.street_address_1}, ${onboardScreen.location.city}, ${onboardScreen.location.state}`);
+    $(`#form-locationaddress-${onboardScreen.device.id}`).val(`${onboardScreen.location.street_address_1}, ${onboardScreen.location.city}, ${onboardScreen.location.state} ${onboardScreen.location.postal_code}`);
+    $(`#form-locationaddress-${onboardScreen.device.id}`).attr('title', `Lat/Long: ${onboardScreen.location.latitude}, ${onboardScreen.location.longitude}`)
 
     if (onboardScreen.location.street_address_1 == "") {
         $(`#btn-save-${onboardScreen.device.id}`).hide();
-        $(`#formhelp-${onboardScreen.device.id}`).append(`<li>Error: Address needs to be added in Studio.</li>`);
+        $(`#formhelp-${onboardScreen.device.id}`).append(`<li>Error: Incomplete address</li>`);
     }
 
     if (onboardScreen.asset.name != "") {
@@ -576,7 +577,8 @@ function generateOnboardScreenObj(screen, isConnected) {
         "operating_hours": {},
         "is_connected": isConnected,
         "env": screen.env,
-        "playlist_name": ""
+        "playlist_name": "",
+        "created_at" : screen.createdAt
     };
 
     try{
@@ -709,7 +711,7 @@ function addScreenToOnboardListItem(onboardScreen) {
                 <div class="input-group">
                     <form class="form-floating">
                         <input type="text" class="form-control border-end-0" id="form-devicename-${onboardScreen.device.id}" placeholder=""
-                            value="${onboardScreen.device.name}" readonly>
+                            value="${onboardScreen.device.name}" readonly title="Ad Unit ID: ${onboardScreen.device.id}">
                         <label for="form-devicename-${onboardScreen.device.id}">Studio Name</label>
                     </form>
                     <button class="btn btn-link border border-start-0 text-decoration-none" style="border-color: #ced4da!important;" data-bs-toggle="collapse" data-bs-target="#collapse-${onboardScreen.device.id}">Edit <i class="bi bi-chevron-down"></i></button>
@@ -717,6 +719,8 @@ function addScreenToOnboardListItem(onboardScreen) {
             </div>
         </div>
         <div id="collapse-${onboardScreen.device.id}" class="row g-2 mx-1 px-1 pb-2 border-start border-end border-bottom border-1 rounded-bottom bg-light collapse">
+            <div class="col-md-6 col-12 text-muted px-2" style="font-size: small;">Ad Unit ID: ${onboardScreen.device.id}</div>
+            <div class="col-md-6 col-12 text-md-end text-muted px-2" style="font-size: small;">Created At: ${onboardScreen.created_at}</div>
             <div class="col-12">
                 <div class="form-floating">
                     <input type="text" class="form-control" id="form-formatteddevicename-${onboardScreen.device.id}" placeholder=""
@@ -971,9 +975,11 @@ function addScreenToOnboardListItem(onboardScreen) {
             <ul id="formhelp-${onboardScreen.device.id}" class="form-text ms-4">
             </ul>
             <div class="col-12 d-flex">
-                <button class="btn btn-primary me-auto" id="btn-copy-${onboardScreen.device.id}">Copy from Default</button>
-                <button class="btn btn-primary ms-1" id="btn-reload-${onboardScreen.device.id}">Reload from Studio</button>
-                <button class="btn btn-primary ms-1" id="btn-save-${onboardScreen.device.id}">Save and Add to List</button>
+                <div class="me-auto">
+                    <button class="btn btn-primary" id="btn-copy-${onboardScreen.device.id}">Copy Default Parameters</button>
+                    <button class="btn btn-primary" id="btn-reload-${onboardScreen.device.id}">Reload from Studio</button>
+                </div>
+                <button class="btn btn-success ms-1" id="btn-save-${onboardScreen.device.id}">Save and Add to List</button>
             </div>
         </div>
     </li>`;

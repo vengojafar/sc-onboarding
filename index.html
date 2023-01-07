@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="build" content="23.01.03.2200" />
+    <meta name="build" content="23.01.06.2100" />
     <title>Vengo Onboarding Tool</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;500;600&amp;display=swap" rel="stylesheet">
@@ -126,7 +126,7 @@
             <p>Enables your ScreenCloud screen to receive programmatic ads from the Vengo Ad Server</p>
         </div>
 
-        <div class="card mb-4">
+        <div class="card mb-4 shadow-sm">
             <h6 class="card-header fw-bold d-flex justify-content-between align-items-center">
                 Instructions
                 <button class="btn btn-link btn-sm text-black" data-bs-toggle="collapse"
@@ -216,7 +216,7 @@
             </div>
         </div>
 
-        <div class="card mb-4">
+        <div class="card mb-4 shadow-sm">
             <h6 class="card-header fw-bold d-flex justify-content-between align-items-center">
                 ScreenCloud API Key
                 <button class="btn btn-link btn-sm text-black" data-bs-toggle="collapse"
@@ -243,7 +243,7 @@
             </div>
         </div>
 
-        <div id="card-parameters" class="card mb-4">
+        <div id="card-parameters" class="card mb-4 shadow-sm">
             <h6 class="card-header fw-bold d-flex justify-content-between align-items-center">
                 Default Parameters
                 <button class="btn btn-link btn-sm text-black" data-bs-toggle="collapse"
@@ -483,7 +483,7 @@
             </div>
         </div>
 
-        <div id="card-allscreens" class="card mb-4">
+        <div id="card-allscreens" class="card mb-4 shadow-sm">
             <h6 class="card-header fw-bold d-flex justify-content-between align-items-center">
                 <div><span id="org-name"></span> Screens (<span id="screen-count">0</span>)</div>
                 <button class="btn btn-link btn-sm text-black" data-bs-toggle="collapse"
@@ -587,16 +587,20 @@
     <div class="modal fade" id="modal-address" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title fs-5" id="staticBackdropLabel">Screen Location</h5>
+                <div class="modal-header bg-light py-2">
+                    <h5 class="modal-title fs-5 fw-bold" id="staticBackdropLabel">Location Address</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Start typing an address and select result from the autocomplete dropdown</p>
-                    <input type="text" id="autocomplete" placeholder="Enter address" style="width: 100%">
+                    <p>1. Start typing the screen location's address<br>2. Select the best result from the dropdown</p>
+                    <form class="form-floating">
+                        <input type="text" class="form-control" id="autocomplete" placeholder="Enter Address" style="width: 100%">
+                        <label for="autocomplete">Address</label>
+                    </form>
+                    
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <div class="modal-footer py-2">
+                    <button type="button" class="btn btn-secondary d-none" data-bs-dismiss="modal">Close</button>
                     <button id="btn-modal-save" type="button" class="btn btn-primary"
                         data-bs-dismiss="modal">Save</button>
                 </div>
@@ -633,8 +637,11 @@
             const button = event.relatedTarget;
             const id = button.getAttribute("data-bs-id");
             screen = getScreenObjectFromId(id);
-            if (screen != null) {
+            if (screen != null && screen.location.street_address_1 != "") {
                 addressInput.value = `${screen.location.street_address_1}, ${screen.location.city}, ${screen.location.state}`;
+            }
+            else {
+                addressInput.value = "";
             }
         });
 
