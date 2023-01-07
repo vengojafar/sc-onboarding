@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terraboost</title>
+
+    <style>
+        body {
+            font-family: monospace;
+        }
+    </style>
+</head>
+
+<body>
+    <button onclick="getJsonFile()">Start</button>
+    <script>
+        function getJsonFile() {
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    var jObj = JSON.parse(this.responseText);
+                    parse(jObj.data.allScreens.nodes);
+                }
+            };
+            xmlhttp.open("GET", "terraboost.json", true);
+            xmlhttp.send();
+        }
+
+        function parse(screens)
+        {
+            var count = 0;
+            document.write(`Ad Unit Id,Operator Spot ID<br>`);
+            screens.forEach(screen => {
+                //document.write(`${screen.id},${screen.name},${screen.isConnected},${screen.env.ad_unit_id}<br>`);
+                if (screen.env.ad_unit_id == screen.id && screen.isConnected == true)
+                {
+                    if (screen.env["vengo.location.postal_code"] == undefined)
+                    {
+                        document.write(`[${count++}] ${screen.name}<br>`);
+                    }
+                    /*if (screen.env["vengo.venue.placement"] == "Entrance 1")
+                    {
+                        document.write(`${screen.id},${screen.env["vengo.venue.id"]}A1<br>`);
+                    }
+                    else if (screen.env["vengo.venue.placement"] == "Entrance 2"){
+                        document.write(`${screen.id},${screen.env["vengo.venue.id"]}B1<br>`);
+                    }*/
+                }
+            });
+            
+        }
+    </script>
+</body>
+
+</html>
